@@ -19,6 +19,7 @@ DEFINES += CPU_ONLY=1
 
 INCLUDEPATH += /home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/
 INCLUDEPATH += /home/anon/Desktop/CleanMonthly/caffe_repo/caffe/distribute/include/
+INCLUDEPATH += include/
 
 LIBS += -lboost_system
 
@@ -30,7 +31,9 @@ HEADERS += \
 
 
 
-unix:!macx: LIBS += -L$$PWD/../../caffe_repo/caffe/build/lib/ -lcaffe
+unix:!macx: LIBS += -L$$PWD/../../../../../../CleanMonthly/caffe_repo/caffe/build/lib/ -lcaffe
 
-INCLUDEPATH += $$PWD/../../caffe_repo/caffe/build
-DEPENDPATH += $$PWD/../../caffe_repo/caffe/build
+INCLUDEPATH += $$PWD/../../../../../../CleanMonthly/caffe_repo/caffe/build
+DEPENDPATH += $$PWD/../../../../../../CleanMonthly/caffe_repo/caffe/build
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../../CleanMonthly/caffe_repo/caffe/build/lib/libcaffe.a
