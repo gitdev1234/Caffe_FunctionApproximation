@@ -40,8 +40,9 @@ ANN::ANN(const string& modelFile_, const string& trainedFile_) {
  */
 double ANN::forward(double inputValue_) {
 
-    // create BLOB for input layer
+    // create BLOB for input layer - data
     Blob<double>* inputLayer = net->input_blobs()[0];
+
 
     // set dimesions of input layer
     // --> for normal caffe works with images, therefore the data

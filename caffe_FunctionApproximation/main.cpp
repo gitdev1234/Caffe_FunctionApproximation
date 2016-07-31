@@ -40,7 +40,7 @@ TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value
 }
 
 
-TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value", "input_tanh_output.prototxt" ) {
+TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value", "input__innerproduct_tanh_innerproduct_tanh_output.prototxt" ) {
     ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt");
 
     SECTION( "single input works" ) {
@@ -48,6 +48,22 @@ TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> inn
         while (d <= 2.0) {
             d += 0.1;
             // check if output is any random valid tanHyperbolic value
+            REQUIRE(ann.forward(d) >= -1);
+            REQUIRE(ann.forward(d) <= 1);
+        }
+
+    }
+}
+
+TEST_CASE( "Simple Forward with loss function : scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value -> loss" , "input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt" ) {
+    ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt");
+
+    SECTION( "single input works" ) {
+        double d = -2.0;
+        while (d <= 2.0) {
+            d += 0.1;
+            // check if output is any random valid tanHyperbolic value
+            cout << "loss : " << ann.forward(d) << endl;
             REQUIRE(ann.forward(d) >= -1);
             REQUIRE(ann.forward(d) <= 1);
         }
