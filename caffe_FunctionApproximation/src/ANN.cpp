@@ -27,7 +27,7 @@ void ANN::forward(float inputValue_) {
     // --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
     // --> in this case we use 1-dimensional data, therefore the data-dimension is 1*1*1*1
     int num      = 1;
-    int channels = 1;
+    int channels = 2;
     int height   = 1;
     int width    = 1;
     vector<int> dimensionsOfInputData = {num,channels,height,width};
@@ -42,10 +42,10 @@ void ANN::forward(float inputValue_) {
     // propagate inputValue through layers
     net->Forward();
     Blob<float>* outputLayer = net->output_blobs()[0];
-    //cout << "num : " << outputLayer->num() << endl;
-    //cout << "channels : " << outputLayer->channels() << endl;
-    //cout << "height : " << outputLayer->height() << endl;
-    //cout << "width : " << outputLayer->width() << endl;
+    cout << "num : " << outputLayer->num() << endl;
+    cout << "channels : " << outputLayer->channels() << endl;
+    cout << "height : " << outputLayer->height() << endl;
+    cout << "width : " << outputLayer->width() << endl;
 
     cout << "result for input : " << inputValue_ << " : " << getDataOfBLOB(outputLayer,0,0,0,0) << endl;
 }
