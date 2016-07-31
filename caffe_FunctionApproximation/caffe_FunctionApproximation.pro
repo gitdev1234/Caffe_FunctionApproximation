@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     src/ANN.cpp
 
 HEADERS += \
-    include/ANN.h
+    include/ANN.h \
+    include/catch.hpp
 
 
 

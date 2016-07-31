@@ -266,7 +266,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/caffe_test1.0.0 || mkdir -p .tmp/caffe_test1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/caffe_test1.0.0/ && $(COPY_FILE) --parents ../caffe_FunctionApproximation/include/ANN.h .tmp/caffe_test1.0.0/ && $(COPY_FILE) --parents ../caffe_FunctionApproximation/main.cpp ../caffe_FunctionApproximation/src/ANN.cpp .tmp/caffe_test1.0.0/ && (cd `dirname .tmp/caffe_test1.0.0` && $(TAR) caffe_test1.0.0.tar caffe_test1.0.0 && $(COMPRESS) caffe_test1.0.0.tar) && $(MOVE) `dirname .tmp/caffe_test1.0.0`/caffe_test1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/caffe_test1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/caffe_test1.0.0/ && $(COPY_FILE) --parents ../caffe_FunctionApproximation/include/ANN.h ../caffe_FunctionApproximation/include/catch.hpp .tmp/caffe_test1.0.0/ && $(COPY_FILE) --parents ../caffe_FunctionApproximation/main.cpp ../caffe_FunctionApproximation/src/ANN.cpp .tmp/caffe_test1.0.0/ && (cd `dirname .tmp/caffe_test1.0.0` && $(TAR) caffe_test1.0.0.tar caffe_test1.0.0 && $(COMPRESS) caffe_test1.0.0.tar) && $(MOVE) `dirname .tmp/caffe_test1.0.0`/caffe_test1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/caffe_test1.0.0
 
 
 clean:compiler_clean 
@@ -303,29 +303,7 @@ compiler_clean:
 
 ####### Compile
 
-main.o: ../caffe_FunctionApproximation/main.cpp ../caffe_FunctionApproximation/include/ANN.h \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/caffe.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/blob.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/common.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/device_alternate.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/cudnn.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/distribute/include/caffe/proto/caffe.pb.h \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/syncedmem.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/filler.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/math_functions.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/mkl_alternate.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/layer.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/layer_factory.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/net.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/parallel.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/internal_thread.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/solver.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/solver_factory.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/blocking_queue.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/benchmark.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/io.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/format.hpp \
-		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/upgrade_proto.hpp
+main.o: ../caffe_FunctionApproximation/main.cpp ../caffe_FunctionApproximation/include/catch.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../caffe_FunctionApproximation/main.cpp
 
 ANN.o: ../caffe_FunctionApproximation/src/ANN.cpp ../caffe_FunctionApproximation/include/ANN.h \

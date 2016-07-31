@@ -16,9 +16,9 @@ ANN::ANN(const string& modelFile_, const string& trainedFile_) {
     }
 }
 
-void ANN::forward(float inputValue_) {
+float ANN::forward(float inputValue_) {
 
-    // create blob for input layer
+    // create BLOB for input layer
     Blob<float>* inputLayer = net->input_blobs()[0];
 
     // set dimesions of input layer
@@ -41,13 +41,12 @@ void ANN::forward(float inputValue_) {
 
     // propagate inputValue through layers
     net->Forward();
-    Blob<float>* outputLayer = net->output_blobs()[0];
-    cout << "num : " << outputLayer->num() << endl;
-    cout << "channels : " << outputLayer->channels() << endl;
-    cout << "height : " << outputLayer->height() << endl;
-    cout << "width : " << outputLayer->width() << endl;
 
-    cout << "result for input : " << inputValue_ << " : " << getDataOfBLOB(outputLayer,0,0,0,0) << endl;
+    // create BLOB for outputLayer
+    Blob<float>* outputLayer = net->output_blobs()[0];
+
+    // return only value in output Layer
+    return getDataOfBLOB(outputLayer,0,0,0,0);
 }
 
 /**
