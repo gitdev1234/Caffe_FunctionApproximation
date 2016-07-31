@@ -18,54 +18,36 @@ ANN::ANN(const string& modelFile_, const string& trainedFile_) {
 
 void ANN::forward(float inputValue_) {
 
-
+    // create blob for input layer
     Blob<float>* inputLayer = net->input_blobs()[0];
 
-    // for normal caffe works with images, therefore the data
-    // typically is 4 dimensional
-    // numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
-    // in this case we use 1-dimensional data, therefore the data-dimension is 1*1*1*1
-    int num      = 3;
-    int channels = 2;
-    int height   = 2;
-    int width    = 2;
+    // set dimesions of input layer
+    // --> for normal caffe works with images, therefore the data
+    // --> typically is 4 dimensional
+    // --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
+    // --> in this case we use 1-dimensional data, therefore the data-dimension is 1*1*1*1
+    int num      = 1;
+    int channels = 1;
+    int height   = 1;
+    int width    = 1;
     vector<int> dimensionsOfInputData = {num,channels,height,width};
     inputLayer->Reshape(dimensionsOfInputData);
 
-    // create a pointer, to data inside input Layer
-    float* inputData = inputLayer->mutable_cpu_data();
-
-    int indexNum     = 0;
-    int indexChannel = 1;
-    int indexHeight  = 1;
-    int indexWidth   = 1;
-    int addressIncrement = indexNum * inputLayer->channels() * inputLayer->height() * inputLayer->width();
-        addressIncrement +=  indexChannel * inputLayer->height() * inputLayer->width();
-        addressIncrement +=  indexHeight * inputLayer->width();
-        addressIncrement +=  indexWidth;
-
-
-    setDataOfBLOB(inputLayer,indexNum,indexChannel,indexHeight,indexWidth,55.6);
-    cout << "value : " << getDataOfBLOB(inputLayer,indexNum,indexChannel,indexHeight,indexWidth) << endl;
-    cout << "count : " << inputLayer->count() << endl;
-    cout << "value orig : " << inputLayer->data_at(0,1,1,1) << endl;
-
-    Blob<float> *temp = inputLayer;
-    temp->Reshape(3,3,2,2);
-    cout << "value : " << getDataOfBLOB(temp,indexNum,indexChannel,indexHeight,indexWidth) << endl;
-    cout << "count : " << temp->count() << endl;
-    cout << "value orig : " << inputLayer->data_at(0,1,1,1) << endl;
-
-
-    /* Forward dimension change to all layers. */
+    // forward dimension change to all layers.
     net->Reshape();
-    cout << inputLayer->data_at(1,-1,1,1);
-    //inputLayer->set_cpu_data(inputValue_);
 
+    // insert inputValue into inputLayer
+    setDataOfBLOB(inputLayer,0,0,0,0,inputValue_);
 
+    // propagate inputValue through layers
     net->Forward();
     Blob<float>* outputLayer = net->output_blobs()[0];
-    //cout << outputLayer->data_at(1,1,1,1);
+    //cout << "num : " << outputLayer->num() << endl;
+    //cout << "channels : " << outputLayer->channels() << endl;
+    //cout << "height : " << outputLayer->height() << endl;
+    //cout << "width : " << outputLayer->width() << endl;
+
+    cout << "result for input : " << inputValue_ << " : " << getDataOfBLOB(outputLayer,0,0,0,0) << endl;
 }
 
 /**
@@ -86,6 +68,8 @@ void ANN::forward(float inputValue_) {
  *
  * NOTICE : If an invalid index is handed into the function, the function just does nothing, except for
  *          printing an error to the console.
+ *
+ * NOTICE : ALL INDEXES USED FOR ACCESSING THE BLOB ARE ZERO-BASED
  *
  */
 void ANN::setDataOfBLOB(Blob<float> *blobToModify_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_, float value_) {
@@ -131,6 +115,8 @@ void ANN::setDataOfBLOB(Blob<float> *blobToModify_, int indexNum_, int indexChan
  *
  * NOTICE : If an invalid index is handed into the function, the function returns zero and
  *          prints an error to console
+ *
+ * NOTICE : ALL INDEXES USED FOR ACCESSING THE BLOB ARE ZERO-BASED
  *
  */
 float ANN::getDataOfBLOB(Blob<float> *blobToReadFrom_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_) {
