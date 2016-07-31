@@ -38,3 +38,17 @@ TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value
     }
 
 }
+
+
+TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value", "input_tanh_output.prototxt" ) {
+    ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt");
+
+    SECTION( "single input works" ) {
+        double d = -2.0;
+        while (d <= 2.0) {
+            d += 0.1;
+            cout << "output : " << ann.forward(d) << endl;
+        }
+
+    }
+}
