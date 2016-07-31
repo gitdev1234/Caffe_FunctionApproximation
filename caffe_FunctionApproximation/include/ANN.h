@@ -24,12 +24,18 @@ using namespace std;
 
 class ANN {
     public:
+        /* --- constructors / destructors --- */
         ANN(const string& modelFile_, const string &trainedFile_ = "");
-        double forward (double inputValue_);
+
+        /* --- pushing values forward (from input to output) --- */
+        double         forward (double         inputValue_);
         vector<double> forward (vector<double> inputValues_);
+
+        /* --- miscellaneous --- */
         void  setDataOfBLOB(Blob<double>* blobToModify_,int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_, double value_);
         double getDataOfBLOB(Blob<double>* blobToReadFrom_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_);
     private:
+        // artificial neural net
         Net<double> *net;
 
 };

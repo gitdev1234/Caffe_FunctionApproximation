@@ -8,6 +8,8 @@ using namespace std;
 // !!!! TEST_CASE IN COMBINITION WITH REQUIRE IS LIKE A LOOP STRUCTURE !!!!
 // !!!! THE TEST_CASE IS EXECUTED FOR EVERY SECTION !!!!
 
+
+
 TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value", "input_tanh_output.prototxt" ) {
     ANN ann("../caffe_FunctionApproximation/prototxt/input_tanh_output.prototxt");
 
@@ -29,7 +31,7 @@ TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value
 
         vector<double> outputValues = ann.forward(inputValues);
         REQUIRE(inputValues.size() == outputValues.size());
-        for (int i = 0; i < outputValues.size(); i++) {
+        for (unsigned int i = 0; i < outputValues.size(); i++) {
             REQUIRE(outputValues[i] == Approx(tanh(inputValues[i])));
         }
 

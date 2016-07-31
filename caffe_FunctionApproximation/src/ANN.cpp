@@ -1,5 +1,17 @@
 #include "ANN.h"
 
+/* --- constructors / destructors --- */
+
+/**
+ * @brief ANN::ANN constructor of class ANN
+ * @param modelFile_ path of prototxt-file which cotains description of net-structure
+ * @param trainedFile_ path of caffemodel-file which contains already trained weights
+ *
+ * constructor of class ANN
+ *  1. sets processing mode (CPU / GPU) depending on previous define CPU_ONLY
+ *  2. loads net-structure from prototxt-file at path modelFile_
+ *  3. loads trained weights from caffemodel-file at path trainedFile_
+ */
 ANN::ANN(const string& modelFile_, const string& trainedFile_) {
     // set processing source
     #ifdef CPU_ONLY
@@ -11,11 +23,21 @@ ANN::ANN(const string& modelFile_, const string& trainedFile_) {
     // load network-structure from prototxt-file
     net = new Net<double>(modelFile_,caffe::TEST);
 
+    // load weights
     if (trainedFile_ != "") {
         net->CopyTrainedLayersFrom(trainedFile_);
     }
 }
 
+/* --- pushing values forward (from input to output) --- */
+
+/**
+ * @brief ANN::forward propagates a scalar double value through the net
+ * @param inputValue_ value which is to propagate through the net
+ * @return returns the scalar output value of the net
+ *
+ * NOTICE : This is to use for nets with only one input-neuron and one output-neuron
+ */
 double ANN::forward(double inputValue_) {
 
     // create BLOB for input layer
@@ -27,13 +49,13 @@ double ANN::forward(double inputValue_) {
     // --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
     // --> in this case we use 1-dimensional data, therefore the data-dimension is 1*1*1*1
     int num      = 1;
-    int channels = 2;
+    int channels = 1;
     int height   = 1;
     int width    = 1;
     vector<int> dimensionsOfInputData = {num,channels,height,width};
     inputLayer->Reshape(dimensionsOfInputData);
 
-    // forward dimension change to all layers.
+    // forward dimension-change to all layers.
     net->Reshape();
 
     // insert inputValue into inputLayer
@@ -49,6 +71,13 @@ double ANN::forward(double inputValue_) {
     return getDataOfBLOB(outputLayer,0,0,0,0);
 }
 
+/**
+ * @brief ANN::forward propagates a vector of double values through the net
+ * @param inputValue_ vector of double values which are to propagate through the net
+ * @return returns the vector of output values of the net
+ *
+ * NOTICE : This is to use for nets with one to many input-neurons and one to many output-neurons
+ */
 vector<double> ANN::forward(vector<double> inputValues_) {
 
     // create BLOB for input layer
@@ -70,7 +99,7 @@ vector<double> ANN::forward(vector<double> inputValues_) {
     net->Reshape();
 
     // insert inputValue into inputLayer
-    for (int i = 0; i < inputValues_.size(); i++) {
+    for (unsigned int i = 0; i < inputValues_.size(); i++) {
         setDataOfBLOB(inputLayer,i,0,0,0,inputValues_[i]);
     }
 
@@ -94,6 +123,8 @@ vector<double> ANN::forward(vector<double> inputValues_) {
     // return vector of values
     return result;
 }
+
+/* --- miscellaneous --- */
 
 /**
  * @brief ANN::setDataOfBLOB sets the data at the given indexes within the blobToModify_ to value_
