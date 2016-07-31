@@ -22,12 +22,15 @@ INCLUDEPATH += /home/anon/Desktop/CleanMonthly/caffe_repo/caffe/distribute/inclu
 INCLUDEPATH += include/
 
 LIBS += -lboost_system
+LIBS += -lglog
+LIBS += -lprotobuf
 
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    src/ANN.cpp
 
 HEADERS += \
-    ann.h
+    include/ANN.h
 
 
 

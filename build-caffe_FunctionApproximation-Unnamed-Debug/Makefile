@@ -18,7 +18,7 @@ CXXFLAGS      = -m64 -pipe -g -std=c++0x -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 INCPATH       = -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I../caffe_FunctionApproximation -I/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include -I/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/distribute/include -I../caffe_FunctionApproximation/include -I/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/build -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I.
 LINK          = g++
 LFLAGS        = -m64
-LIBS          = $(SUBLIBS) -lboost_system -L/home/anon/Desktop/PrivateProjects/Programming/C++/Caffe_Deep_Learning_Framework/Caffe_FunctionApproximation/caffe_FunctionApproximation/../../../../../../CleanMonthly/caffe_repo/caffe/build/lib/ -lcaffe -lQt5Core -lpthread 
+LIBS          = $(SUBLIBS) -lboost_system -lglog -lprotobuf -L/home/anon/Desktop/PrivateProjects/Programming/C++/Caffe_Deep_Learning_Framework/Caffe_FunctionApproximation/caffe_FunctionApproximation/../../../../../../CleanMonthly/caffe_repo/caffe/build/lib/ -lcaffe -lQt5Core -lpthread 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
@@ -45,8 +45,10 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../caffe_FunctionApproximation/main.cpp 
-OBJECTS       = main.o
+SOURCES       = ../caffe_FunctionApproximation/main.cpp \
+		../caffe_FunctionApproximation/src/ANN.cpp 
+OBJECTS       = main.o \
+		ANN.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/shell-unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -104,7 +106,8 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../caffe_FunctionApproximation/caffe_FunctionApproximation.pro ../caffe_FunctionApproximation/main.cpp
+		../caffe_FunctionApproximation/caffe_FunctionApproximation.pro ../caffe_FunctionApproximation/main.cpp \
+		../caffe_FunctionApproximation/src/ANN.cpp
 QMAKE_TARGET  = caffe_test
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = caffe_test
@@ -263,7 +266,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/caffe_test1.0.0 || mkdir -p .tmp/caffe_test1.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/caffe_test1.0.0/ && $(COPY_FILE) --parents ann.h .tmp/caffe_test1.0.0/ && $(COPY_FILE) --parents ../caffe_FunctionApproximation/main.cpp .tmp/caffe_test1.0.0/ && (cd `dirname .tmp/caffe_test1.0.0` && $(TAR) caffe_test1.0.0.tar caffe_test1.0.0 && $(COMPRESS) caffe_test1.0.0.tar) && $(MOVE) `dirname .tmp/caffe_test1.0.0`/caffe_test1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/caffe_test1.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/caffe_test1.0.0/ && $(COPY_FILE) --parents ../caffe_FunctionApproximation/include/ANN.h .tmp/caffe_test1.0.0/ && $(COPY_FILE) --parents ../caffe_FunctionApproximation/main.cpp ../caffe_FunctionApproximation/src/ANN.cpp .tmp/caffe_test1.0.0/ && (cd `dirname .tmp/caffe_test1.0.0` && $(TAR) caffe_test1.0.0.tar caffe_test1.0.0 && $(COMPRESS) caffe_test1.0.0.tar) && $(MOVE) `dirname .tmp/caffe_test1.0.0`/caffe_test1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/caffe_test1.0.0
 
 
 clean:compiler_clean 
@@ -300,7 +303,7 @@ compiler_clean:
 
 ####### Compile
 
-main.o: ../caffe_FunctionApproximation/main.cpp ../caffe_FunctionApproximation/include/ann.h \
+main.o: ../caffe_FunctionApproximation/main.cpp ../caffe_FunctionApproximation/include/ANN.h \
 		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/caffe.hpp \
 		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/blob.hpp \
 		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/common.hpp \
@@ -324,6 +327,31 @@ main.o: ../caffe_FunctionApproximation/main.cpp ../caffe_FunctionApproximation/i
 		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/format.hpp \
 		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/upgrade_proto.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../caffe_FunctionApproximation/main.cpp
+
+ANN.o: ../caffe_FunctionApproximation/src/ANN.cpp ../caffe_FunctionApproximation/include/ANN.h \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/caffe.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/blob.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/common.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/device_alternate.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/cudnn.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/distribute/include/caffe/proto/caffe.pb.h \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/syncedmem.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/filler.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/math_functions.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/mkl_alternate.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/layer.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/layer_factory.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/net.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/parallel.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/internal_thread.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/solver.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/solver_factory.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/blocking_queue.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/benchmark.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/io.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/format.hpp \
+		/home/anon/Desktop/CleanMonthly/caffe_repo/caffe/include/caffe/util/upgrade_proto.hpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ANN.o ../caffe_FunctionApproximation/src/ANN.cpp
 
 ####### Install
 
