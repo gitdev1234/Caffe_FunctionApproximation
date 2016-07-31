@@ -45,8 +45,54 @@ double ANN::forward(double inputValue_) {
     // create BLOB for outputLayer
     Blob<double>* outputLayer = net->output_blobs()[0];
 
-    // return only value in output Layer
+    // return the only value in output Layer
     return getDataOfBLOB(outputLayer,0,0,0,0);
+}
+
+vector<double> ANN::forward(vector<double> inputValues_) {
+
+    // create BLOB for input layer
+    Blob<double>* inputLayer = net->input_blobs()[0];
+
+    // set dimesions of input layer
+    // --> for normal caffe works with images, therefore the data
+    // --> typically is 4 dimensional
+    // --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
+    // --> in this case we use 1-dimensional data, therefore the data-dimension is 1*1*1*1
+    int num      = inputValues_.size();
+    int channels = 1;
+    int height   = 1;
+    int width    = 1;
+    vector<int> dimensionsOfInputData = {num,channels,height,width};
+    inputLayer->Reshape(dimensionsOfInputData);
+
+    // forward dimension change to all layers.
+    net->Reshape();
+
+    // insert inputValue into inputLayer
+    for (int i = 0; i < inputValues_.size(); i++) {
+        setDataOfBLOB(inputLayer,i,0,0,0,inputValues_[i]);
+    }
+
+    // propagate inputValue through layers
+    net->Forward();
+
+    // create BLOB for outputLayer
+    Blob<double>* outputLayer = net->output_blobs()[0];
+    cout << "num : " << outputLayer->num() << endl;
+    cout << "channels : " << outputLayer->channels() << endl;
+    cout << "height : " << outputLayer->height() << endl;
+    cout << "width : " << outputLayer->width() << endl;
+
+
+    // copy values in output Layer to 1-dimensional-vector of values
+    vector<double> result;
+    for (int i = 0; i < outputLayer->num(); i++) {
+        result.push_back(getDataOfBLOB(outputLayer,i,0,0,0));
+    }
+
+    // return vector of values
+    return result;
 }
 
 /**

@@ -26,6 +26,7 @@ class ANN {
     public:
         ANN(const string& modelFile_, const string &trainedFile_ = "");
         double forward (double inputValue_);
+        vector<double> forward (vector<double> inputValues_);
         void  setDataOfBLOB(Blob<double>* blobToModify_,int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_, double value_);
         double getDataOfBLOB(Blob<double>* blobToReadFrom_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_);
     private:

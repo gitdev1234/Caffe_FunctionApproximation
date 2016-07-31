@@ -15,7 +15,22 @@ TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value
         double d = -2.0;
         while (d <= 2.0) {
             d += 0.1;
-            REQUIRE(ann.forward(d) == Approx(tanh(d)));
+            REQUIRE(ann.forward(d) == Approx(tanh(d )));
+        }
+
+    }
+    SECTION( "vector input works" ) {
+        double d = -2.0;
+        vector<double> inputValues;
+        while (d <= 2.0) {
+            d += 0.1;
+            inputValues.push_back(d);
+        }
+
+        vector<double> outputValues = ann.forward(inputValues);
+        REQUIRE(inputValues.size() == outputValues.size());
+        for (int i = 0; i < outputValues.size(); i++) {
+            REQUIRE(outputValues[i] == Approx(tanh(inputValues[i])));
         }
 
     }
