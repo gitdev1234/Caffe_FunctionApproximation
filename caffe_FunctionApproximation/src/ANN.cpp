@@ -84,7 +84,8 @@ void ANN::forward(float inputValue_) {
  * be useful to set the content of the blob manually.
  * This function provides the functionality of doing this.
  *
- * NOTICE : If an invalid index is handed into the function, the function is just doing nothing.
+ * NOTICE : If an invalid index is handed into the function, the function just does nothing, except for
+ *          printing an error to the console.
  *
  */
 void ANN::setDataOfBLOB(Blob<float> *blobToModify_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_, float value_) {
@@ -112,17 +113,35 @@ void ANN::setDataOfBLOB(Blob<float> *blobToModify_, int indexNum_, int indexChan
     }
 }
 
+/**
+ * @brief ANN::getDataOfBLOB reads the data stored at the given index within blobToReadFrom_
+ * @param blobToReadFrom_ the blob to read from
+ * @param indexNum_     the index of the first dimension (index of image) valid indexes are from zero to blobToModify_->num() - 1
+ * @param indexChannel_ the index of the second dimension (index of channel) valid indexes are from zero to blobToModify_->channels() - 1
+ * @param indexHeight_  the index of the third dimension (y-index of pixel) valid indexes are from zero to blobToModify_->height() - 1
+ * @param indexWidth_   the index of the fourth dimension (x-index of pixel) valid indexes are from zero to blobToModify_->width - 1
+ * @return returns the data stored at the given index within blobToReadFrom_
+ *
+ * for normal caffe works with images, therefore the data typically is 4 dimensional
+ * --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
+ *
+ * To use blobs in whatever way (e.g. normal data which is not images) it might
+ * be useful to get the content of the blob manually.
+ * This function provides the functionality of doing this.
+ *
+ * NOTICE : If an invalid index is handed into the function, the function returns zero and
+ *          prints an error to console
+ *
+ */
 float ANN::getDataOfBLOB(Blob<float> *blobToReadFrom_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_) {
-    // create a pointer, that points to the first value inside the blobToReadFrom
-    float* pointerToBlobValue = blobToReadFrom_->mutable_cpu_data();
-
-    int addressIncrement  = indexNum_     * blobToReadFrom_->channels() * blobToReadFrom_->height() * blobToReadFrom_->width();
-        addressIncrement += indexChannel_ * blobToReadFrom_->height()   * blobToReadFrom_->width();
-        addressIncrement += indexHeight_  * blobToReadFrom_->width();
-        addressIncrement += indexWidth_;
-
-    pointerToBlobValue += addressIncrement;
-
-    return *pointerToBlobValue;
-
+    // check if index is invalid
+    if ( (indexNum_     < 0) || (indexNum_     > blobToReadFrom_->num()      - 1) ||
+         (indexChannel_ < 0) || (indexChannel_ > blobToReadFrom_->channels() - 1) ||
+         (indexHeight_  < 0) || (indexHeight_  > blobToReadFrom_->height()   - 1) ||
+         (indexWidth_   < 0) || (indexWidth_   > blobToReadFrom_->width()    - 1) ){
+        cout << "Error : please use valid indexes!" << endl;
+        return 0;
+    } else {
+        return blobToReadFrom_->data_at(indexNum_,indexChannel_,indexHeight_,indexWidth_);
+    }
 }
