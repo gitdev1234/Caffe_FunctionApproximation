@@ -9,17 +9,17 @@ ANN::ANN(const string& modelFile_, const string& trainedFile_) {
     #endif
 
     // load network-structure from prototxt-file
-    net = new Net<float>(modelFile_,caffe::TEST);
+    net = new Net<double>(modelFile_,caffe::TEST);
 
     if (trainedFile_ != "") {
         net->CopyTrainedLayersFrom(trainedFile_);
     }
 }
 
-float ANN::forward(float inputValue_) {
+double ANN::forward(double inputValue_) {
 
     // create BLOB for input layer
-    Blob<float>* inputLayer = net->input_blobs()[0];
+    Blob<double>* inputLayer = net->input_blobs()[0];
 
     // set dimesions of input layer
     // --> for normal caffe works with images, therefore the data
@@ -43,7 +43,7 @@ float ANN::forward(float inputValue_) {
     net->Forward();
 
     // create BLOB for outputLayer
-    Blob<float>* outputLayer = net->output_blobs()[0];
+    Blob<double>* outputLayer = net->output_blobs()[0];
 
     // return only value in output Layer
     return getDataOfBLOB(outputLayer,0,0,0,0);
@@ -71,7 +71,7 @@ float ANN::forward(float inputValue_) {
  * NOTICE : ALL INDEXES USED FOR ACCESSING THE BLOB ARE ZERO-BASED
  *
  */
-void ANN::setDataOfBLOB(Blob<float> *blobToModify_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_, float value_) {
+void ANN::setDataOfBLOB(Blob<double> *blobToModify_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_, double value_) {
     // check if index is invalid
     if ( (indexNum_     < 0) || (indexNum_     > blobToModify_->num()      - 1) ||
          (indexChannel_ < 0) || (indexChannel_ > blobToModify_->channels() - 1) ||
@@ -80,7 +80,7 @@ void ANN::setDataOfBLOB(Blob<float> *blobToModify_, int indexNum_, int indexChan
         cout << "Error : please use valid indexes!" << endl;
     } else {
         // create a pointer, that points to the first value inside the blobToModify
-        float* pointerToBlobValue = blobToModify_->mutable_cpu_data();
+        double* pointerToBlobValue = blobToModify_->mutable_cpu_data();
 
         // calculate the address of the requested indexes
         int addressIncrement  = indexNum_     * blobToModify_->channels() * blobToModify_->height() * blobToModify_->width();
@@ -118,7 +118,7 @@ void ANN::setDataOfBLOB(Blob<float> *blobToModify_, int indexNum_, int indexChan
  * NOTICE : ALL INDEXES USED FOR ACCESSING THE BLOB ARE ZERO-BASED
  *
  */
-float ANN::getDataOfBLOB(Blob<float> *blobToReadFrom_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_) {
+double ANN::getDataOfBLOB(Blob<double> *blobToReadFrom_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_) {
     // check if index is invalid
     if ( (indexNum_     < 0) || (indexNum_     > blobToReadFrom_->num()      - 1) ||
          (indexChannel_ < 0) || (indexChannel_ > blobToReadFrom_->channels() - 1) ||

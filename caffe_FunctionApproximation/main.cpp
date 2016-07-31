@@ -12,10 +12,10 @@ TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value
     ANN ann("../caffe_FunctionApproximation/prototxt/input_tanh_output.prototxt");
 
     SECTION( "single input works" ) {
-        float f = -2.0;
-        while (f <= 2.0) {
-            f += 0.1;
-            REQUIRE(ann.forward(f) == Approx(tanh(f)));
+        double d = -2.0;
+        while (d <= 2.0) {
+            d += 0.1;
+            REQUIRE(ann.forward(d) == Approx(tanh(d)));
         }
 
     }

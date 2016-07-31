@@ -25,11 +25,11 @@ using namespace std;
 class ANN {
     public:
         ANN(const string& modelFile_, const string &trainedFile_ = "");
-        float forward (float inputValue_);
-        void  setDataOfBLOB(Blob<float>* blobToModify_,int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_, float value_);
-        float getDataOfBLOB(Blob<float>* blobToReadFrom_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_);
+        double forward (double inputValue_);
+        void  setDataOfBLOB(Blob<double>* blobToModify_,int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_, double value_);
+        double getDataOfBLOB(Blob<double>* blobToReadFrom_, int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_);
     private:
-        Net<float> *net;
+        Net<double> *net;
 
 };
 
