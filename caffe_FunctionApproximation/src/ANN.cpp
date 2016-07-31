@@ -26,8 +26,6 @@ ANN::ANN(const string& modelFile_, const string& trainedFile_) {
     // load weights
     if (trainedFile_ != "") {
         net->CopyTrainedLayersFrom(trainedFile_);
-    } else {
-        //net->Init(modelFile_);
     }
 }
 

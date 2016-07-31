@@ -47,7 +47,9 @@ TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> inn
         double d = -2.0;
         while (d <= 2.0) {
             d += 0.1;
-            cout << "output : " << ann.forward(d) << endl;
+            // check if output is any random valid tanHyperbolic value
+            REQUIRE(ann.forward(d) >= -1);
+            REQUIRE(ann.forward(d) <= 1);
         }
 
     }
