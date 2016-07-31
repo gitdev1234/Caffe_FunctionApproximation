@@ -20,6 +20,7 @@
 
 using namespace caffe;
 using namespace std;
+//using shared_ptr = std::shared_ptr;
 
 
 class ANN {
@@ -30,6 +31,9 @@ class ANN {
         /* --- pushing values forward (from input to output) --- */
         double         forward (double         inputValue_);
         vector<double> forward (vector<double> inputValues_);
+
+        /* --- train / optimize weights --- */
+        double train (double inputValue_, double expectedResult_);
 
         /* --- miscellaneous --- */
         void  setDataOfBLOB(Blob<double>* blobToModify_,int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_, double value_);

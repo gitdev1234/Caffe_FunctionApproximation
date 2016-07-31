@@ -63,9 +63,7 @@ TEST_CASE( "Simple Forward with loss function : scalar input Value -> innerprodu
         while (d <= 2.0) {
             d += 0.1;
             // check if output is any random valid tanHyperbolic value
-            cout << "loss : " << ann.forward(d) << endl;
-            REQUIRE(ann.forward(d) >= -1);
-            REQUIRE(ann.forward(d) <= 1);
+            cout << "loss : " << ann.train(d,0.5) << endl;
         }
 
     }

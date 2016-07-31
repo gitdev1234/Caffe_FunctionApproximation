@@ -43,7 +43,6 @@ double ANN::forward(double inputValue_) {
     // create BLOB for input layer - data
     Blob<double>* inputLayer = net->input_blobs()[0];
 
-
     // set dimesions of input layer
     // --> for normal caffe works with images, therefore the data
     // --> typically is 4 dimensional
@@ -123,6 +122,83 @@ vector<double> ANN::forward(vector<double> inputValues_) {
 
     // return vector of values
     return result;
+}
+
+/* --- train / optimize weights --- */
+double ANN::train (double inputValue_, double expectedResult_) {
+
+    // create BLOB for inputlayer - input data
+    Blob<double>* inputLayer = net->input_blobs()[0];
+
+    // create BLOB for inputlayer - expected output data
+    Blob<double>* label      = net->input_blobs()[1];
+
+    // set dimesions of inputlayer - input data
+    // --> for normal caffe works with images, therefore the data
+    // --> typically is 4 dimensional
+    // --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
+    // --> in this case we use 1-dimensional data, therefore the data-dimension is 1*1*1*1
+    int num      = 1;
+    int channels = 1;
+    int height   = 1;
+    int width    = 1;
+    vector<int> dimensionsOfInputLayer = {num,channels,height,width};
+    inputLayer->Reshape(dimensionsOfInputLayer);
+
+    // set dimensions of inputlayer - expected output data
+    label->Reshape(dimensionsOfInputLayer);
+
+    // forward dimension-change to all layers.
+    net->Reshape();
+
+    // insert inputValue into inputLayer - input data
+    setDataOfBLOB(inputLayer,0,0,0,0,inputValue_);
+
+    // insert expected output value into inputLayer - expected output data
+    setDataOfBLOB(label,0,0,0,0,expectedResult_);
+
+    // propagate inputValue through layers
+    net->Forward();
+    vector<string> names = net->blob_names();
+    cout << "names : ";
+    for (int i = 0; i< names.size(); i++) {
+        cout << names[i] << ",";
+    }
+    cout << endl;
+    caffe::shared_ptr<Blob<double> > temp = net->blob_by_name("activatedOutputLayer");
+    const double *begin = temp->cpu_data();
+    const double *end = begin + temp->channels();
+    vector<double> vec = vector<double>(begin, end);
+    cout << vec[0];
+
+
+   // cout << "atte" << &temp << endl;
+    //const double* probs_out = temp->cpu_data();
+    //int num_2 = (*temp).num();
+    //int chann = temp->channels();
+    //int heigh = temp->height();
+    //int widt = temp->width();
+
+
+    SolverParameter param;
+    switch (Caffe::mode()) {
+      case Caffe::CPU:
+        param.set_solver_mode(SolverParameter_SolverMode_CPU);
+        break;
+      case Caffe::GPU:
+        param.set_solver_mode(SolverParameter_SolverMode_GPU);
+        break;
+      default:
+        LOG(FATAL) << "Unknown Caffe mode: " << Caffe::mode();
+    }
+    caffe::shared_ptr<Solver<double> > solver_;
+
+
+    // create BLOB for outputLayer
+    Blob<double>* outputLayer = net->output_blobs()[0];
+
+    // return the only value in output Layer
+    return getDataOfBLOB(outputLayer,0,0,0,0);
 }
 
 /* --- miscellaneous --- */
