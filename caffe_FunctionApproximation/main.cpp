@@ -99,8 +99,8 @@ TEST_CASE( "load trained net" ) {
         while (d <= 2.0) {
             d += 0.1;
             oFile << d << "," << tanh(d) << "," << ann.forward(d) << endl;
-            cout << "for : " << d << "tanh : " << tanh(d) << endl;
-            cout << "for : " << d << "ann  : " << ann.forward(d) << endl;
+            cout << "for : " << d << "tanh : "  << tanh(d) << endl;
+            cout << "for : " << d << "ann  : "  << ann.forward(d) << endl;
         }
         oFile.close();
     }
