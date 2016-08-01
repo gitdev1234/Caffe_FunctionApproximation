@@ -70,5 +70,19 @@ TEST_CASE( "Simple Forward with loss function : scalar input Value -> innerprodu
             cout << "loss : " << ann.train(d,0.5,"../caffe_FunctionApproximation/prototxt/test_solver.prototxt") << endl;
        //r }
 
+
+    }
+
+    SECTION( "vector learning works" ) {
+        double d = -2.0;
+        vector<double> inputValues;
+        vector<double> expectedResults;
+        while (d <= 2.0) {
+            d += 0.1;
+            inputValues.push_back(d);
+            expectedResults.push_back(tanh(d));
+       }
+       cout << "loss : " << ann.train(inputValues,expectedResults,"../caffe_FunctionApproximation/prototxt/test_solver.prototxt") << endl;
+
     }
 }

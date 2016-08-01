@@ -318,7 +318,7 @@ double ANN::train (vector<double> inputValues_, vector<double> expectedResults_,
 
     //shared_ptr<caffe::Solver<float> >
     //    solver(caffe::SolverRegistry<float>::CreateSolver(solver_param));
-    solver_->Solve();
+    solver_->Solve("testResult");
 
     // create BLOB for outputLayer
 //    Blob<double>* outputLayer = net->output_blobs()[0];
