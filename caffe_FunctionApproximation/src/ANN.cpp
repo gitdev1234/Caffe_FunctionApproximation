@@ -245,6 +245,19 @@ double ANN::train (double inputValue_, double expectedResult_, const string& sol
  * @param inputValues_ vector of inputValues
  * @param expectedOutputValues_ vector of output values
  * @param solverFile_ solver prototxt file, which defines all parameters and the structure of the net
+ *
+ * The train function executes a learning to the net by doing the following steps :
+ *   1. create a solver object which encapsulate and controls the net defined in solverFile_
+ *   2. load the input data and the expected output data to the net
+ *   3. execute solver_->Solve, which
+ *        3.1 automatically loops through the input data
+ *        3.2 propagates the input data through the net,
+ *        3.3 calculates the current loss of the output
+ *        3.4 calculates deltas for every weight, depending on the loss
+ *        3.5 calculates new weights
+ *        3.6 outputs preliminary results and the final result of the trained weights
+ *            into *.caffemodel - files
+ *
  */
 bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValues_, const string& solverFile_) {
     if (inputValues_.size() != expectedOutputValues_.size()) {
