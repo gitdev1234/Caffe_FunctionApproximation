@@ -93,12 +93,15 @@ TEST_CASE( "load trained net" ) {
     ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt",caffe::TEST,
             "/home/anon/Desktop/PrivateProjects/Programming/C++/Caffe_Deep_Learning_Framework/Caffe_FunctionApproximation/caffe_FunctionApproximation/caffemodel/train_iter_449980.caffemodel");
 
+    ofstream oFile("test.csv");
     SECTION( "single input works" ) {
         double d = -2.0;
         while (d <= 2.0) {
             d += 0.1;
+            oFile << d << "," << tanh(d) << "," << ann.forward(d) << endl;
             cout << "for : " << d << "tanh : " << tanh(d) << endl;
             cout << "for : " << d << "ann  : " << ann.forward(d) << endl;
         }
+        oFile.close();
     }
 }
