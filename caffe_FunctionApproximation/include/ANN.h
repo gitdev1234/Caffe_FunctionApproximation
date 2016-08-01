@@ -39,7 +39,7 @@ class ANN {
 
         /* --- train / optimize weights --- */
         double train (double inputValue_, double expectedResult_, const string &solverFile_);
-        double train (vector<double> inputValues_, vector<double> expectedResults_, const string& solverFile_);
+        bool train (vector<double> inputValues_, vector<double> expectedOutputValues_, const string& solverFile_);
 
         /* --- miscellaneous --- */
         void  setDataOfBLOB(Blob<double>* blobToModify_,int indexNum_, int indexChannel_, int indexHeight_, int indexWidth_, double value_);

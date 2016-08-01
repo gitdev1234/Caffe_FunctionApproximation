@@ -55,7 +55,7 @@ TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> inn
     }
 }*/
 
-/*
+
 TEST_CASE( "Simple Forward with loss function : scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value -> loss" , "input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt" ) {
     ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt",caffe::TRAIN);
 
@@ -87,8 +87,9 @@ TEST_CASE( "Simple Forward with loss function : scalar input Value -> innerprodu
 
     }
 }
-*/
 
+
+/*
 TEST_CASE( "load trained net" ) {
     ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt",caffe::TEST,
             "/home/anon/Desktop/PrivateProjects/Programming/C++/Caffe_Deep_Learning_Framework/Caffe_FunctionApproximation/caffe_FunctionApproximation/caffemodel/train_iter_449980.caffemodel");
@@ -105,3 +106,4 @@ TEST_CASE( "load trained net" ) {
         oFile.close();
     }
 }
+*/

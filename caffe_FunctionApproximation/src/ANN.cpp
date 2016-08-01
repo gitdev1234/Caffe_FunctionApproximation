@@ -240,95 +240,102 @@ double ANN::train (double inputValue_, double expectedResult_, const string& sol
 
 // -- vector
 
-double ANN::train (vector<double> inputValues_, vector<double> expectedResults_, const string& solverFile_) {
+/**
+ * @brief ANN::train trains the network with the given inputs and expected outputs
+ * @param inputValues_ vector of inputValues
+ * @param expectedOutputValues_ vector of output values
+ * @param solverFile_ solver prototxt file, which defines all parameters and the structure of the net
+ */
+bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValues_, const string& solverFile_) {
+    if (inputValues_.size() != expectedOutputValues_.size()) {
+        cout << "Error : inputValues_ and expectedOutputValues_ have different lengths" << endl;
+        return false;
+    } else {
+        SolverParameter param;
+        switch (Caffe::mode()) {
+          case Caffe::CPU:
+            param.set_solver_mode(SolverParameter_SolverMode_CPU);
+            break;
+          case Caffe::GPU:
+            param.set_solver_mode(SolverParameter_SolverMode_GPU);
+            break;
+          default:
+            LOG(FATAL) << "Unknown Caffe mode: " << Caffe::mode();
+        }
 
-    SolverParameter param;
-    switch (Caffe::mode()) {
-      case Caffe::CPU:
-        param.set_solver_mode(SolverParameter_SolverMode_CPU);
-        break;
-      case Caffe::GPU:
-        param.set_solver_mode(SolverParameter_SolverMode_GPU);
-        break;
-      default:
-        LOG(FATAL) << "Unknown Caffe mode: " << Caffe::mode();
+        // --- read solver parameters from file ---
+
+        // read file into string
+        std::ifstream iFile;
+        iFile.open(solverFile_);
+        stringstream sstr;
+        sstr << iFile.rdbuf();
+        string str;
+        str = sstr.str();
+
+        // create solver parameter by string
+        if (!google::protobuf::TextFormat::ParseFromString(str, &param)) {
+            cout << "Error : solver prototxt file is not valid" << endl;
+            return false;
+        } else {
+
+            // create solver by parameter
+            solver_.reset(new SGDSolver<double>(param));
+
+            // --- load input data and expected output data into solver_->net ---
+
+            // create BLOB for inputlayer - input data
+            Blob<double>* inputDataBLOB = solver_->net()->input_blobs()[0];
+
+            // create BLOB for inputlayer - expected output data
+            Blob<double>* expectedOutputDataBLOB = solver_->net()->input_blobs()[1];
+
+            // set dimesions of input layer
+            // --> for normal caffe works with images, therefore the data
+            // --> typically is 4 dimensional
+            // --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
+            // --> in this case we use 1-dimensional data, therefore the data-dimension is numberOfInputValues*1*1*1
+            int num      = inputValues_.size();
+            int channels = 1;
+            int height   = 1;
+            int width    = 1;
+            vector<int> dimensionsOfData = {num,channels,height,width};
+
+            // set dimensions of input data
+            inputDataBLOB->Reshape(dimensionsOfData);
+
+            // set dimensions of expected output data
+            expectedOutputDataBLOB->Reshape(dimensionsOfData);
+
+            // forward dimension-change to all layers
+            solver_->net()->Reshape();
+
+            // insert input values and expected output values into
+            // BLOBs of input layer and output layer
+            for (unsigned int i = 0; i < inputValues_.size(); i++) {
+                setDataOfBLOB(inputDataBLOB,i,0,0,0,inputValues_[i]);
+                setDataOfBLOB(expectedOutputDataBLOB,i,0,0,0,expectedOutputValues_[i]);
+            }
+
+            // start training
+            //  --> this is done by Solve(), which automatically does the following steps
+            //      --> 1. propagates input data through solver_->net
+            //             by automatically using solver_->net()->forward
+            //             as the  output layer is a loss-layer the forward()
+            //             produces a loss value (the badness of the current weights)
+            //      --> 2. by knowing the loss and using solver_->net()->backward() it automatically
+            //             calculates a gradient for every weight (every connection) in the net
+            //             (gradient == a delta of how much the weights have to get changed)
+            //      --> 3. by knowing the gradients it automatically calculates the new weights
+            //  --> these three steps are executed for every input-value and for every learning iteration step
+            //  --> during Solve() preliminary results for the weights are saved to the directory defined in
+            //      solverFile_
+            //  --> the frequency of creating preliminary results as well as the number of training iterations
+            //      and other parameters are defined in solverFile_
+            solver_->Solve();
+            return true;
+        }
     }
-
-    std::ifstream iFile;
-    iFile.open(solverFile_);
-    stringstream sstr;
-    sstr << iFile.rdbuf();
-    string str;
-    str = sstr.str();
-
-    google::protobuf::TextFormat::ParseFromString(str, &param);
-
-    param.set_iter_size(10);
-    solver_.reset(new SGDSolver<double>(param));
-    solver_->net()->input_blobs();
-
-
-    //expected
-    // ------------
-
-
-    // create BLOB for inputlayer - input data
-    Blob<double>* inputLayer = solver_->net()->input_blobs()[0];
-
-    // create BLOB for inputlayer - expected output data
-    Blob<double>* label      = solver_->net()->input_blobs()[1];
-
-    // set dimesions of input layer
-    // --> for normal caffe works with images, therefore the data
-    // --> typically is 4 dimensional
-    // --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
-    // --> in this case we use 1-dimensional data, therefore the data-dimension is 1*1*1*1
-    int num      = inputValues_.size();
-    int channels = 1;
-    int height   = 1;
-    int width    = 1;
-    vector<int> dimensionsOfInputData = {num,channels,height,width};
-    inputLayer->Reshape(dimensionsOfInputData);
-
-    // set dimensions of inputlayer - expected output data
-    label->Reshape(dimensionsOfInputData);
-
-    // forward dimension-change to all layers.
-    solver_->net()->Reshape();
-
-    // insert inputValue into inputLayer
-    // insert expected output value into inputLayer - expected output data
-    for (unsigned int i = 0; i < inputValues_.size(); i++) {
-        setDataOfBLOB(inputLayer,i,0,0,0,inputValues_[i]);
-        setDataOfBLOB(label,i,0,0,0,expectedResults_[i]);
-    }
-
-    // propagate inputValue through layers
-    solver_->net()->Forward();
-
-    // create BLOB for outputLayer
-    Blob<double>* outputLayer = solver_->net()->output_blobs()[0];
-
-    // return the only value in output Layer
-    cout << "solver output of forward " << getDataOfBLOB(outputLayer,0,0,0,0) << endl;
-
-    // ------------
-
-
-
-cout << "iter_size" << solver_->param().iter_size() << endl;
-//solver_->param().set_iter_size(10);
-
-
-    //shared_ptr<caffe::Solver<float> >
-    //    solver(caffe::SolverRegistry<float>::CreateSolver(solver_param));
-    solver_->Solve();
-
-    // create BLOB for outputLayer
-//    Blob<double>* outputLayer = net->output_blobs()[0];
-
-    // return the only value in output Layer
-    return getDataOfBLOB(outputLayer,0,0,0,0);
 }
 
 
