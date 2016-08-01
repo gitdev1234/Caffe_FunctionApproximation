@@ -11,7 +11,7 @@ using namespace std;
 
 
 TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value", "input_tanh_output.prototxt" ) {
-    ANN ann("../caffe_FunctionApproximation/prototxt/input_tanh_output.prototxt");
+    ANN ann("../caffe_FunctionApproximation/prototxt/input_tanh_output.prototxt",caffe::TEST);
 
     SECTION( "single input works" ) {
         double d = -2.0;
@@ -41,7 +41,7 @@ TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value
 
 
 TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value", "input__innerproduct_tanh_innerproduct_tanh_output.prototxt" ) {
-    ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt");
+      ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt",caffe::TEST);
 
     SECTION( "single input works" ) {
         double d = -2.0;
@@ -56,15 +56,15 @@ TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> inn
 }
 
 TEST_CASE( "Simple Forward with loss function : scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value -> loss" , "input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt" ) {
-    ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt");
+    ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt",caffe::TRAIN);
 
     SECTION( "single input works" ) {
         double d = -2.0;
-        while (d <= 2.0) {
+        //while (d <= 2.0) {
             d += 0.1;
             // check if output is any random valid tanHyperbolic value
-            cout << "loss : " << ann.train(d,0.5) << endl;
-        }
+            cout << "loss : " << ann.train(d,0.5,"../caffe_FunctionApproximation/prototxt/solver.prototxt") << endl;
+       // }
 
     }
 }
