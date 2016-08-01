@@ -1,50 +1,63 @@
 test_interval: 10 
-test_iter: 10 
-test_state: { stage: 'with-softmax' }
-test_iter: 10 
-test_state: {}
+test_iter: 100
+# Display every 20 iterations
+display: 20
 net_param { 
-  name: 'TestNetwork' 
-  layer { 
-    name: 'data' 
-    type: 'DummyData' 
-    dummy_data_param { 
-      shape { 
-        dim: 5 
-        dim: 2 
-        dim: 3 
-        dim: 4 
-      } 
-      shape { 
-        dim: 5 
-      } 
-    } 
-    top: 'data' 
-    top: 'label' 
-  } 
-  layer { 
-    name: 'innerprod' 
-    type: 'InnerProduct' 
-    inner_product_param { 
-      num_output: 10 
-    } 
-    bottom: 'data' 
-    top: 'innerprod' 
-  } 
-  layer { 
-    name: 'accuracy' 
-    type: 'Accuracy' 
-    bottom: 'innerprod' 
-    bottom: 'label' 
-    top: 'accuracy' 
-    exclude: { phase: TRAIN } 
-  } 
-  layer { 
-    name: 'loss' 
-    type: 'SoftmaxWithLoss' 
-    bottom: 'innerprod' 
-    bottom: 'label' 
-    include: { phase: TRAIN } 
-    include: { phase: TEST stage: 'with-softmax' } 
-  } 
+name: 'CaffeNet'
+layer {
+  name: 'data'
+  type: 'Input'
+  top: 'data'
+  top: 'label'
+  input_param { shape: { dim: 1 dim: 1 dim: 1 dim: 1 } }
+}
+layer {
+  name: 'inputLayer'
+  type: 'InnerProduct'
+  bottom: 'data'
+  top: 'inputLayer'
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: 'xavier'
+    }
+    bias_filler {
+      type: 'constant'
+    }
+  }
+}
+layer {
+  name: 'activatedInputLayer'
+  type: 'TanH'
+  bottom: 'inputLayer'
+  top: 'activatedInputLayer'
+}
+layer {
+  name: 'outputLayer'
+  type: 'InnerProduct'
+  bottom: 'activatedInputLayer'
+  top: 'outputLayer'
+  inner_product_param {
+    num_output: 1
+    weight_filler {
+      type: 'xavier'
+    }
+    bias_filler {
+      type: 'constant'
+    }
+  }
+}
+layer {
+  name: 'activatedOutputLayer'
+  type: 'TanH'
+  bottom: 'outputLayer'
+  top: 'activatedOutputLayer'
+}
+layer {
+  name: 'loss'
+  type: 'EuclideanLoss'
+  bottom: 'activatedOutputLayer'
+  bottom: 'label'
+  top: 'loss'
+} 
 } 
