@@ -245,6 +245,7 @@ double ANN::train (double inputValue_, double expectedResult_, const string& sol
  * @param inputValues_ vector of inputValues
  * @param expectedOutputValues_ vector of output values
  * @param solverFile_ solver prototxt file, which defines all parameters and the structure of the net
+ * @return returns true if training has succesfully ended, otherwise false
  *
  * The train function executes a learning to the net by doing the following steps :
  *   1. create a solver object which encapsulate and controls the net defined in solverFile_
@@ -257,6 +258,12 @@ double ANN::train (double inputValue_, double expectedResult_, const string& sol
  *        3.5 calculates new weights
  *        3.6 outputs preliminary results and the final result of the trained weights
  *            into *.caffemodel - files
+ *
+ * NOTICE : the size of inputValues and expected output values has to be equal
+ *          otherwise the function stops and returns false
+ * NOTICE : the file, which is located at solverFile_ has to be a valid google-protobuf file
+ *          which can be used to specify a caffe-solver, otherwise the function stops
+ *          and returns true
  *
  */
 bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValues_, const string& solverFile_) {
