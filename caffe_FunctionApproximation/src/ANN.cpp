@@ -222,7 +222,8 @@ double ANN::train (double inputValue_, double expectedResult_, const string& sol
 
     // ------------
 
-
+    cout << "iter_size" << solver_->param().iter_size() << endl;
+    //cout << solver_->param().
 
 
 
@@ -262,6 +263,7 @@ double ANN::train (vector<double> inputValues_, vector<double> expectedResults_,
 
     google::protobuf::TextFormat::ParseFromString(str, &param);
 
+    param.set_iter_size(10);
     solver_.reset(new SGDSolver<double>(param));
     solver_->net()->input_blobs();
 
@@ -314,11 +316,13 @@ double ANN::train (vector<double> inputValues_, vector<double> expectedResults_,
 
 
 
+cout << "iter_size" << solver_->param().iter_size() << endl;
+//solver_->param().set_iter_size(10);
 
 
     //shared_ptr<caffe::Solver<float> >
     //    solver(caffe::SolverRegistry<float>::CreateSolver(solver_param));
-    solver_->Solve("testResult");
+    solver_->Solve();
 
     // create BLOB for outputLayer
 //    Blob<double>* outputLayer = net->output_blobs()[0];
