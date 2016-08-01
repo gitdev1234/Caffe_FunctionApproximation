@@ -9,9 +9,10 @@ using namespace std;
 // !!!! THE TEST_CASE IS EXECUTED FOR EVERY SECTION !!!!
 
 
-/*
-TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value", "input_tanh_output.prototxt" ) {
-    ANN ann("../caffe_FunctionApproximation/prototxt/input_tanh_output.prototxt",caffe::TEST);
+
+TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value" ) {
+    ANN ann("../caffe_FunctionApproximation/prototxt/input_tanh_output.prototxt");
+
 
     SECTION( "single input works" ) {
         double d = -2.0;
@@ -19,8 +20,8 @@ TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value
             d += 0.1;
             REQUIRE(ann.forward(d) == Approx(tanh(d )));
         }
-
     }
+
     SECTION( "vector input works" ) {
         double d = -2.0;
         vector<double> inputValues;
@@ -40,8 +41,8 @@ TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value
 }
 
 
-TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value", "input__innerproduct_tanh_innerproduct_tanh_output.prototxt" ) {
-      ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt",caffe::TEST);
+TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value") {
+    ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt");
 
     SECTION( "single input works" ) {
         double d = -2.0;
@@ -53,37 +54,25 @@ TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> inn
         }
 
     }
-}*/
+}
 
 
-TEST_CASE( "Simple Forward with loss function : scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value -> loss" , "input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt" ) {
-    ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt",caffe::TRAIN);
-
-    SECTION( "single input works" ) {
-        double d = -2.0;
-        //while (d <= 2.0) {
-            d += 0.1;
-            // check if output is any random valid tanHyperbolic value
-            cout << "ab hier train ------------------------------------------" << endl;
-            cout << "ab hier train ------------------------------------------" << endl;
-            cout << "ab hier train ------------------------------------------" << endl;
-
-            cout << "loss : " << ann.train(d,0.5,"../caffe_FunctionApproximation/prototxt/test_solver.prototxt") << endl;
-       //r }
-
-
-    }
+TEST_CASE("Training ANN") {
+    ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt",
+            "","../caffe_FunctionApproximation/prototxt/test_solver.prototxt");
 
     SECTION( "vector learning works" ) {
         double d = -2.0;
         vector<double> inputValues;
         vector<double> expectedResults;
+
         while (d <= 2.0) {
             d += 0.1;
             inputValues.push_back(d);
             expectedResults.push_back(tanh(d));
-       }
-       cout << "loss : " << ann.train(inputValues,expectedResults,"../caffe_FunctionApproximation/prototxt/test_solver.prototxt") << endl;
+        }
+
+       REQUIRE(ann.train(inputValues,expectedResults,"../caffe_FunctionApproximation/prototxt/test_solver.prototxt"));
 
     }
 }
