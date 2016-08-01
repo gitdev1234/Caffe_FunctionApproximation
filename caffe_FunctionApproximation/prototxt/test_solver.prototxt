@@ -1,0 +1,50 @@
+test_interval: 10 
+test_iter: 10 
+test_state: { stage: 'with-softmax' }
+test_iter: 10 
+test_state: {}
+net_param { 
+  name: 'TestNetwork' 
+  layer { 
+    name: 'data' 
+    type: 'DummyData' 
+    dummy_data_param { 
+      shape { 
+        dim: 5 
+        dim: 2 
+        dim: 3 
+        dim: 4 
+      } 
+      shape { 
+        dim: 5 
+      } 
+    } 
+    top: 'data' 
+    top: 'label' 
+  } 
+  layer { 
+    name: 'innerprod' 
+    type: 'InnerProduct' 
+    inner_product_param { 
+      num_output: 10 
+    } 
+    bottom: 'data' 
+    top: 'innerprod' 
+  } 
+  layer { 
+    name: 'accuracy' 
+    type: 'Accuracy' 
+    bottom: 'innerprod' 
+    bottom: 'label' 
+    top: 'accuracy' 
+    exclude: { phase: TRAIN } 
+  } 
+  layer { 
+    name: 'loss' 
+    type: 'SoftmaxWithLoss' 
+    bottom: 'innerprod' 
+    bottom: 'label' 
+    include: { phase: TRAIN } 
+    include: { phase: TEST stage: 'with-softmax' } 
+  } 
+} 

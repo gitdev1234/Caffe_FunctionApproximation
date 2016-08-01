@@ -127,6 +127,7 @@ vector<double> ANN::forward(vector<double> inputValues_) {
 /* --- train / optimize weights --- */
 double ANN::train (double inputValue_, double expectedResult_, const string& solverFile_) {
 
+    /*
     // create BLOB for inputlayer - input data
     Blob<double>* inputLayer = net->input_blobs()[0];
 
@@ -178,7 +179,7 @@ double ANN::train (double inputValue_, double expectedResult_, const string& sol
     //int chann = temp->channels();
     //int heigh = temp->height();
     //int widt = temp->width();
-
+*/
 
     SolverParameter param;
     switch (Caffe::mode()) {
@@ -201,96 +202,10 @@ double ANN::train (double inputValue_, double expectedResult_, const string& sol
     string str;
     str = sstr.str();
 
-    const string& proto =
-         "test_interval: 10 "
-         "test_iter: 10 "
-         "test_state: { stage: 'with-softmax' }"
-         "test_iter: 10 "
-         "test_state: {}"
-         "net_param { "
-         "  name: 'TestNetwork' "
-         "  layer { "
-         "    name: 'data' "
-         "    type: 'DummyData' "
-         "    dummy_data_param { "
-         "      shape { "
-         "        dim: 5 "
-         "        dim: 2 "
-         "        dim: 3 "
-         "        dim: 4 "
-         "      } "
-         "      shape { "
-         "        dim: 5 "
-         "      } "
-         "    } "
-         "    top: 'data' "
-         "    top: 'label' "
-         "  } "
-         "  layer { "
-         "    name: 'innerprod' "
-         "    type: 'InnerProduct' "
-         "    inner_product_param { "
-         "      num_output: 10 "
-         "    } "
-         "    bottom: 'data' "
-         "    top: 'innerprod' "
-         "  } "
-         "  layer { "
-         "    name: 'accuracy' "
-         "    type: 'Accuracy' "
-         "    bottom: 'innerprod' "
-         "    bottom: 'label' "
-         "    top: 'accuracy' "
-         "    exclude: { phase: TRAIN } "
-         "  } "
-         "  layer { "
-         "    name: 'loss' "
-         "    type: 'SoftmaxWithLoss' "
-         "    bottom: 'innerprod' "
-         "    bottom: 'label' "
-         "    include: { phase: TRAIN } "
-         "    include: { phase: TEST stage: 'with-softmax' } "
-         "  } "
-         "} ";
-
-
-
-    //param.ParseFromString(proto);
-    google::protobuf::TextFormat::ParseFromString(proto, &param);
-    cout << "test_interval : " << param.test_interval() << endl;
-
-    // test_iter specifies how many forward passes the test should carry out.
-    // In the case we have a test batch size 40 and 100 test iterations,
-    // covering the full 400 test iterations
-    //param.set_test_iter(0,100);
-    param.set_max_iter(10000);
-    cout << "iter size : " << param.has_iter_size() << endl;
-
-    param.clear_iter_size();
-    param.set_test_iter(0,100);
-
-    // Carry out testing every 20 training iterations.
-    param.set_test_interval(20);
-
-    // The base learning rate, momentum and the weight decay of the network.
-    param.set_base_lr(0.01);
-    param.set_momentum(0.9);
-    param.set_weight_decay(0.0005);
-
-    // The learning rate policy
-    param.set_gamma(0.001);
-    param.set_power(0.75);
-
-    //Display every 20 iterations
-    param.set_display(20);
-
-    param.set_snapshot(5000);
-    param.set_snapshot_prefix("input__innerproduct_tanh_innerproduct_tanh_output_loss_solver");
-    param.set_solver_mode(caffe::SolverParameter_SolverMode_CPU);
+    google::protobuf::TextFormat::ParseFromString(str, &param);
 
     solver_.reset(new SGDSolver<double>(param));
 
-    //google::protobuf::TextFormat::ParseFromString(proto, &param);
 
     // create BLOB for outputLayer
     Blob<double>* outputLayer = net->output_blobs()[0];

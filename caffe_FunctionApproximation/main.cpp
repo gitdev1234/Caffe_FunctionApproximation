@@ -9,7 +9,7 @@ using namespace std;
 // !!!! THE TEST_CASE IS EXECUTED FOR EVERY SECTION !!!!
 
 
-
+/*
 TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value", "input_tanh_output.prototxt" ) {
     ANN ann("../caffe_FunctionApproximation/prototxt/input_tanh_output.prototxt",caffe::TEST);
 
@@ -53,7 +53,7 @@ TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> inn
         }
 
     }
-}
+}*/
 
 TEST_CASE( "Simple Forward with loss function : scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value -> loss" , "input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt" ) {
     ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt",caffe::TRAIN);
@@ -63,8 +63,12 @@ TEST_CASE( "Simple Forward with loss function : scalar input Value -> innerprodu
         //while (d <= 2.0) {
             d += 0.1;
             // check if output is any random valid tanHyperbolic value
-            cout << "loss : " << ann.train(d,0.5,"../caffe_FunctionApproximation/prototxt/solver.prototxt") << endl;
-       // }
+            cout << "ab hier train ------------------------------------------" << endl;
+            cout << "ab hier train ------------------------------------------" << endl;
+            cout << "ab hier train ------------------------------------------" << endl;
+
+            cout << "loss : " << ann.train(d,0.5,"../caffe_FunctionApproximation/prototxt/test_solver.prototxt") << endl;
+       //r }
 
     }
 }
