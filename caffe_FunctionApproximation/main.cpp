@@ -89,7 +89,7 @@ TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> inn
 }
 
 
-TEST_CASE("Training ANN") {
+TEST_CASE("Training ANN for tanh") {
     ANN ann("../caffe_FunctionApproximation/prototxt/net_without_loss.prototxt",
             "","../caffe_FunctionApproximation/prototxt/test_solver.prototxt");
 
@@ -146,6 +146,37 @@ TEST_CASE("Training ANN") {
            oFile.close();
        }
     }
+}
 
+TEST_CASE("Training ANN for x^2 + x") {
+    ANN ann("../caffe_FunctionApproximation/prototxt/net_without_loss.prototxt",
+            "","../caffe_FunctionApproximation/prototxt/test_solver.prototxt");
 
+    SECTION( "vector learning on random weights works" ) {
+        double d = -2.0;
+        vector<double> inputValues;
+        vector<double> expectedResults;
+
+        while (d <= 2.0) {
+            d += 0.1;
+            inputValues.push_back(d);
+            expectedResults.push_back(d*d+d);
+        }
+
+       REQUIRE(ann.train(inputValues,expectedResults));
+
+       SECTION( "propagate through trained network" ) {
+           vector<double> annOut;
+           annOut = ann.forward(inputValues);
+
+           ofstream oFile("x_square_plus_x.csv");
+           for (int i = 0; i < annOut.size(); i++) {
+               oFile << inputValues[i] << "," << expectedResults[i] << "," << annOut[i] << endl;
+               cout << "for : " << inputValues[i] << " x^2+x : "  << expectedResults[i] << endl;
+               cout << "for : " << inputValues[i] << " ann   : "  << annOut[i] << endl;
+               REQUIRE(nearlyEqual(expectedResults[i],annOut[i],0.05));
+           }
+           oFile.close();
+       }
+    }
 }

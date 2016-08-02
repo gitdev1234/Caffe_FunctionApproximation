@@ -277,6 +277,10 @@ bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValue
 
 /* --- miscellaneous --- */
 
+vector<double> ANN::zTransformVector(vector<double> vectorToTransform) {
+
+}
+
 /**
  * @brief ANN::setDataOfBLOB sets the data at the given indexes within the blobToModify_ to value_
  * @param blobToModify_ the blob which is to modify

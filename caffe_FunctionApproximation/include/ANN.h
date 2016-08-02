@@ -51,6 +51,9 @@ class ANN {
         /* --- train / optimize weights --- */
         bool train (vector<double> inputValues_, vector<double> expectedOutputValues_);
 
+        /* --- miscellaneous --- */
+        vector<double> zTransformVector(vector<double> vectorToTransform);
+
      private:
         // artificial neural net
         Net<double> *net;
