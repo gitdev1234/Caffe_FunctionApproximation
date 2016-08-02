@@ -4,13 +4,14 @@
 
 /**
  * @brief ANN::ANN constructor of class ANN
- * @param modelFile_ path of prototxt-file which cotains description of net-structure
- * @param trainedFile_ path of caffemodel-file which contains already trained weights
+ *
+ * @param netStructurePrototxtPath_     path of prototxt-file which describes the net structure
+ * @param trainedWeightsCaffemodelPath_ path of caffemodel-file which contains the trained weights of the net
+ * @param solverParametersPrototxtPath_ path of prototxt-file which describes the solver-parameters and the links to the net which is to optimize
  *
  * constructor of class ANN
  *  1. sets processing mode (CPU / GPU) depending on previous define CPU_ONLY
- *  2. loads net-structure from prototxt-file at path modelFile_
- *  3. loads trained weights from caffemodel-file at path trainedFile_
+ *  2. sets the given paths in private attributes
  */
 ANN::ANN(const string& netStructurePrototxtPath_, const string& trainedWeightsCaffemodelPath_, const string &solverParametersPrototxtPath_) {
     // set processing source
@@ -80,7 +81,7 @@ double ANN::forward(double inputValue_) {
 
 /**
  * @brief ANN::forward propagates a vector of double values through the net
- * @param inputValue_ vector of double values which are to propagate through the net
+ * @param inputValues_ vector of double values which are to propagate through the net
  * @return returns the vector of output values of the net
  *
  * NOTICE : This is to use for nets with one to many input-neurons and one to many output-neurons
@@ -147,11 +148,10 @@ vector<double> ANN::forward(vector<double> inputValues_) {
  * @brief ANN::train trains the network with the given inputs and expected outputs
  * @param inputValues_ vector of inputValues
  * @param expectedOutputValues_ vector of output values
- * @param solverFile_ solver prototxt file, which defines all parameters and the structure of the net
  * @return returns true if training has succesfully ended, otherwise false
  *
  * The train function executes a learning to the net by doing the following steps :
- *   1. create a solver object which encapsulate and controls the net defined in solverFile_
+ *   1. create a solver object which encapsulate and controls the net solverParametersPrototxtPath-file
  *   2. load the input data and the expected output data to the net
  *   3. execute solver_->Solve, which
  *        3.1 automatically loops through the input data
@@ -164,9 +164,9 @@ vector<double> ANN::forward(vector<double> inputValues_) {
  *
  * NOTICE : the size of inputValues and expected output values has to be equal
  *          otherwise the function stops and returns false
- * NOTICE : the file, which is located at solverFile_ has to be a valid google-protobuf file
- *          which can be used to specify a caffe-solver, otherwise the function stops
- *          and returns true
+ * NOTICE : the file, which is located at getSolverParametersPrototxtPath has to be a valid
+ *          google-protobuf file which can be used to specify a caffe-solver, otherwise the
+ *          function stops and returns true
  *
  */
 bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValues_) {
