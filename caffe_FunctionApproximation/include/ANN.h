@@ -49,7 +49,7 @@ class ANN {
         vector<double> forward (vector<double> inputValues_);
 
         /* --- train / optimize weights --- */
-        bool train (vector<double> inputValues_, vector<double> expectedOutputValues_, const string& solverFile_);
+        bool train (vector<double> inputValues_, vector<double> expectedOutputValues_);
 
      private:
         // artificial neural net

@@ -93,6 +93,7 @@ vector<double> ANN::forward(vector<double> inputValues_) {
     // load weights
     string trainedWeightsCaffemodelPath_l = getTrainedWeightsCaffemodelPath();
     if (trainedWeightsCaffemodelPath_l != "") {
+        trainedWeightsCaffemodelPath_l = "/home/anon/Desktop/PrivateProjects/Programming/C++/Caffe_Deep_Learning_Framework/Caffe_FunctionApproximation/build-caffe_FunctionApproximation-Unnamed-Debug/train_iter_450000.caffemodel";
         net->CopyTrainedLayersFrom(trainedWeightsCaffemodelPath_l);
     }
 
@@ -168,7 +169,7 @@ vector<double> ANN::forward(vector<double> inputValues_) {
  *          and returns true
  *
  */
-bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValues_, const string& solverFile_) {
+bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValues_) {
     if (inputValues_.size() != expectedOutputValues_.size()) {
         cout << "Error : inputValues_ and expectedOutputValues_ have different lengths" << endl;
         return false;
@@ -189,7 +190,7 @@ bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValue
 
         // read file into string
         std::ifstream iFile;
-        iFile.open(solverFile_);
+        iFile.open(getSolverParametersPrototxtPath());
         stringstream sstr;
         sstr << iFile.rdbuf();
         string str;
@@ -203,6 +204,12 @@ bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValue
 
             // create solver by parameter
             solver_.reset(new SGDSolver<double>(param));
+
+            // load weights
+            string trainedWeightsCaffemodelPath_l = getTrainedWeightsCaffemodelPath();
+            if (trainedWeightsCaffemodelPath_l != "") {
+                solver_->net()->CopyTrainedLayersFrom(trainedWeightsCaffemodelPath_l);
+            }
 
             // --- load input data and expected output data into solver_->net ---
 
@@ -255,6 +262,12 @@ bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValue
             //  --> the frequency of creating preliminary results as well as the number of training iterations
             //      and other parameters are defined in solverFile_
             solver_->Solve();
+
+            // save current trained weights
+            stringstream tempPath;
+            tempPath << param.snapshot_prefix() << "_iter_" << param.max_iter() << ".caffemodel";
+            setTrainedWeightsCaffemodelPath(tempPath.str());
+            solver_->Snapshot();
             return true;
         }
     }

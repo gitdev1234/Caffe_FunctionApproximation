@@ -79,13 +79,13 @@ gamma: 0.0001
 power: 0.75
 
 # Display every 20 iterations
-display: 20
+display: 10000
 
 # The maximum number of iterations
 max_iter: 10000
 
 # snapshot intermediate results
-snapshot: 5000
+snapshot: 10000
 snapshot_prefix: "input__innerproduct_tanh_innerproduct_tanh_output_loss_solver"
 
 # solver mode: CPU or GPU
