@@ -42,6 +42,20 @@ TEST_CASE( "Test nearly equal" ) {
 }
 
 
+TEST_CASE ("z-transformation") {
+    ANN ann("");
+    vector<double> randVals = {
+        3.5608959524,  0.2071982273,  5.0710065779, -9.0429632133, -2.9011220089, 5.9242935898,
+        8.1078151753, -7.9773012735, -1.0035576625,  2.9495603475, -5.984263923,  1.5644301055,
+        8.113492392,  -5.0453927834, -0.6696311967, -2.6061569643, -0.1676226198, 0.7153041032,
+        5.341395319,  -4.9502959987, -0.7041797996,  6.2834974588,  2.6638055057, 8.5452458146,
+        7.5833344297,  8.7057468691, -6.4355135593, -1.6960091889, -4.4790856098, 3.9688208792
+    };
+    ann.zTransformVector(randVals,2);
+
+}
+
+/*
 TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value" ) {
     ANN ann("../caffe_FunctionApproximation/prototxt/very_simple_net.prototxt");
 
@@ -180,3 +194,4 @@ TEST_CASE("Training ANN for x^2 + x") {
        }
     }
 }
+*/

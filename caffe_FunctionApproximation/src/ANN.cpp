@@ -277,7 +277,23 @@ bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValue
 
 /* --- miscellaneous --- */
 
-vector<double> ANN::zTransformVector(vector<double> vectorToTransform) {
+vector<double> ANN::zTransformVector(const vector<double>& vectorToTransform_, double decimalPlaces_) {
+
+    vector<double> result = vectorToTransform_;
+
+
+    // calculate mean
+    double sum = std::accumulate(vectorToTransform_.begin(), vectorToTransform_.end(), 0.0);
+    double mean = sum / vectorToTransform_.size();
+    // calculate standard deviation
+    double sq_sum = std::inner_product(vectorToTransform_.begin(), vectorToTransform_.end(), vectorToTransform_.begin(), 0.0);
+    double stdev = std::sqrt(sq_sum / vectorToTransform_.size() - mean * mean);
+
+    for (int i = 0 ; i < vectorToTransform_.size(); i++) {
+        result[i] = (vectorToTransform_[i] - mean) / stdev;
+    }
+
+    return result;
 
 }
 

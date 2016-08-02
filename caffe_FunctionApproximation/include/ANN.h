@@ -3,6 +3,7 @@
 
 // STL
 #include <vector>
+#include <map>
 #include <iostream>
 #include <fstream>
 // caffe
@@ -52,7 +53,7 @@ class ANN {
         bool train (vector<double> inputValues_, vector<double> expectedOutputValues_);
 
         /* --- miscellaneous --- */
-        vector<double> zTransformVector(vector<double> vectorToTransform);
+        vector<double> zTransformVector(const vector<double> &vectorToTransform_, double decimalPlaces_);
 
      private:
         // artificial neural net
