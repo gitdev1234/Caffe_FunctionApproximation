@@ -42,7 +42,7 @@ TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value
 
 
 TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> innerproduct -> tanh -> scalar output value") {
-    ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt");
+    ANN ann("../caffe_FunctionApproximation/prototxt/net_without_loss.prototxt");
 
     SECTION( "single input works" ) {
         double d = -2.0;
@@ -58,7 +58,7 @@ TEST_CASE( "Simple Forward Net scalar input Value -> innerproduct -> tanh -> inn
 
 
 TEST_CASE("Training ANN") {
-    ANN ann("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output_loss.prototxt",
+    ANN ann("../caffe_FunctionApproximation/prototxt/net_without_loss.prototxt",
             "","../caffe_FunctionApproximation/prototxt/test_solver.prototxt");
 
     SECTION( "vector learning on random weights works" ) {
@@ -95,15 +95,13 @@ TEST_CASE("Training ANN") {
            vector<double> inputVals;
            vector<double> tanhOut;
            vector<double> annOut;
-           ann.setNetStructurePrototxtPath("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt");
+           ann.setNetStructurePrototxtPath("../caffe_FunctionApproximation/prototxt/net_without_loss.prototxt");
            while (d <= 2.0) {
                d += 0.1;
                inputVals.push_back(d);
                tanhOut.push_back(tanh(d));
-               //annOut.push_back(ann.forward(d));
            }
 
-           //ann.setNetStructurePrototxtPath();
            annOut = ann.forward(inputVals);
 
            ofstream oFile("test.csv");
