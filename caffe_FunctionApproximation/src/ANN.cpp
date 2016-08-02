@@ -277,25 +277,44 @@ bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValue
 
 /* --- miscellaneous --- */
 
-vector<double> ANN::zTransformVector(const vector<double>& vectorToTransform_, double decimalPlaces_) {
+vector<double> ANN::zTransformVector(const vector<double>& vectorToTransform_) {
 
     vector<double> result = vectorToTransform_;
 
-
     // calculate mean
     double sum = std::accumulate(vectorToTransform_.begin(), vectorToTransform_.end(), 0.0);
-    double mean = sum / vectorToTransform_.size();
+    double mean = double(sum) / double(vectorToTransform_.size());
     // calculate standard deviation
     double sq_sum = std::inner_product(vectorToTransform_.begin(), vectorToTransform_.end(), vectorToTransform_.begin(), 0.0);
-    double stdev = std::sqrt(sq_sum / vectorToTransform_.size() - mean * mean);
+    double stdev = std::sqrt(sq_sum / double(vectorToTransform_.size()-1) - mean * mean);
 
     for (int i = 0 ; i < vectorToTransform_.size(); i++) {
-        result[i] = (vectorToTransform_[i] - mean) / stdev;
+        result[i] = (double(vectorToTransform_[i]) - double(mean)) / double(stdev);
     }
 
     return result;
 
 }
+
+vector<double> ANN::reZTransformVector(const vector<double> &vectorToReTransform_, const vector<double> &vectorBeforeZTransform_) {
+    vector<double> result = vectorToReTransform_;
+
+    // calculate mean
+    double sum = std::accumulate(vectorBeforeZTransform_.begin(), vectorBeforeZTransform_.end(), 0.0);
+    double mean = double(sum) / double(vectorBeforeZTransform_.size());
+    // calculate standard deviation
+    double sq_sum = std::inner_product(vectorBeforeZTransform_.begin(), vectorBeforeZTransform_.end(), vectorBeforeZTransform_.begin(), 0.0);
+    double stdev = std::sqrt(sq_sum / double(vectorBeforeZTransform_.size()-1) - mean * mean);
+
+    for (int i = 0 ; i < vectorToReTransform_.size(); i++) {
+        result[i] = double(vectorToReTransform_[i]) * double(stdev) + double(mean);
+    }
+
+    return result;
+}
+
+
+
 
 /**
  * @brief ANN::setDataOfBLOB sets the data at the given indexes within the blobToModify_ to value_

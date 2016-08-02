@@ -53,7 +53,8 @@ class ANN {
         bool train (vector<double> inputValues_, vector<double> expectedOutputValues_);
 
         /* --- miscellaneous --- */
-        vector<double> zTransformVector(const vector<double> &vectorToTransform_, double decimalPlaces_);
+        vector<double> zTransformVector(const vector<double> &vectorToTransform_);
+        vector<double> reZTransformVector(const vector<double> &vectorToReTransform_, const vector<double> &vectorBeforeZTransform_);
 
      private:
         // artificial neural net
