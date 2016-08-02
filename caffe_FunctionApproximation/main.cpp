@@ -95,11 +95,15 @@ TEST_CASE("Training ANN") {
            vector<double> inputVals;
            vector<double> tanhOut;
            vector<double> annOut;
+           ann.setNetStructurePrototxtPath("../caffe_FunctionApproximation/prototxt/input__innerproduct_tanh_innerproduct_tanh_output.prototxt");
            while (d <= 2.0) {
                d += 0.1;
                inputVals.push_back(d);
                tanhOut.push_back(tanh(d));
+               //annOut.push_back(ann.forward(d));
            }
+
+           //ann.setNetStructurePrototxtPath();
            annOut = ann.forward(inputVals);
 
            ofstream oFile("test.csv");
@@ -114,3 +118,4 @@ TEST_CASE("Training ANN") {
 
 
 }
+
