@@ -8,7 +8,7 @@ using namespace std;
 // !!!! TEST_CASE IN COMBINITION WITH REQUIRE IS LIKE A LOOP STRUCTURE !!!!
 // !!!! THE TEST_CASE IS EXECUTED FOR EVERY SECTION !!!!
 
-/*
+
 bool nearlyEqual(double val1_, double val2_, double tolerance_) {
     return ( abs (val1_ - val2_) <= tolerance_ );
 }
@@ -106,9 +106,29 @@ TEST_CASE ("transformations, scaling") {
             REQUIRE(reScaledVals[i] == randVals[i]);
         }
     }
+    SECTION ("scaling multidimensional vectors") {
+        vector<double> secondVector;
+        for (int i = 0; i < 10; i++) {
+            secondVector.push_back(i*10);
+        }
+        vector<vector<double>> multiDimVector;
+        multiDimVector.push_back(randVals);
+        multiDimVector.push_back(secondVector);
+
+
+        vector<vector<double>> scaledVals   = ann.scaleVector(multiDimVector,65.1234,true);
+        vector<vector<double>> reScaledVals = ann.scaleVector(scaledVals,65.1234,false);
+        for (int i = 0; i < multiDimVector.size(); i++) {
+            for (int i2 = 0; i2 < multiDimVector[i].size(); i2++ ) {
+                REQUIRE(scaledVals[i][i2] == multiDimVector[i][i2] / 65.1234);
+                REQUIRE(reScaledVals[i][i2] == scaledVals[i][i2] * 65.1234);
+                REQUIRE(reScaledVals[i][i2] == multiDimVector[i][i2]);
+            }
+        }
+    }
 }
 
-
+/*
 TEST_CASE( "Simple Forward Net scalar input Value -> tanh -> scalar output value" ) {
     ANN ann("../caffe_FunctionApproximation/prototxt/very_simple_net.prototxt");
 
@@ -294,6 +314,7 @@ TEST_CASE("Sinus") {
 }
 */
 
+/*
 TEST_CASE("Multi-Dimensional function") {
     ANN ann("../caffe_FunctionApproximation/prototxt/extended_net_without_loss.prototxt",
             "","../caffe_FunctionApproximation/prototxt/test_solver.prototxt");
@@ -322,11 +343,9 @@ TEST_CASE("Multi-Dimensional function") {
                 y += step;
             }
             x += step;
-
-
         }
 
-        /*
+
        inputValues = ann.scaleVector(inputValues,2,true);
        expectedResults = ann.scaleVector(expectedResults,10,true);
        REQUIRE(ann.train(inputValues,expectedResults));
@@ -347,6 +366,6 @@ TEST_CASE("Multi-Dimensional function") {
            }
            oFile.close();
        }
-       */
+
     }
-}
+}*/

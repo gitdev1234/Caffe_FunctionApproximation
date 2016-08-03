@@ -380,15 +380,25 @@ vector<double> ANN::reZTransformVector(const vector<double> &vectorToReTransform
     return result;
 }
 
-vector<vector<double> > ANN::scaleVector(const vector<vector<double> > &vectorToScale_, double scaleFactor_, bool minimize) {
+vector<double> ANN::scaleVector(const vector<double> &vectorToScale_, double scaleFactor_, bool minimize_) {
     vector<double> result = vectorToScale_;
 
     for (int i = 0 ; i < vectorToScale_.size(); i++) {
-        if (minimize) {
+        if (minimize_) {
             result[i] = double(vectorToScale_[i]) / double(scaleFactor_);
         } else {
             result[i] = double(vectorToScale_[i]) * double(scaleFactor_);
         }
+    }
+
+    return result;
+}
+
+vector<vector<double> > ANN::scaleVector(const vector<vector<double> > &vectorToScale_, double scaleFactor_, bool minimize_) {
+    vector< vector<double> > result = vectorToScale_;
+
+    for (int i = 0 ; i < vectorToScale_.size(); i++) {
+        result[i] = scaleVector(vectorToScale_[i],scaleFactor_,minimize_);
     }
 
     return result;
