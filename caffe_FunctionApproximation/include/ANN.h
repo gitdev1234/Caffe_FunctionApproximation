@@ -55,6 +55,7 @@ class ANN {
         /* --- miscellaneous --- */
         vector<double> zTransformVector(const vector<double> &vectorToTransform_);
         vector<double> reZTransformVector(const vector<double> &vectorToReTransform_, const vector<double> &vectorBeforeZTransform_);
+        vector<double> scaleVector(const vector<double> &vectorToScale_, double scaleFactor_, bool minimize);
 
      private:
         // artificial neural net
