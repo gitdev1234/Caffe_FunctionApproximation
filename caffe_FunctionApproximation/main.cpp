@@ -8,7 +8,7 @@ using namespace std;
 // !!!! TEST_CASE IN COMBINITION WITH REQUIRE IS LIKE A LOOP STRUCTURE !!!!
 // !!!! THE TEST_CASE IS EXECUTED FOR EVERY SECTION !!!!
 
-
+/*
 bool nearlyEqual(double val1_, double val2_, double tolerance_) {
     return ( abs (val1_ - val2_) <= tolerance_ );
 }
@@ -290,5 +290,63 @@ TEST_CASE("Sinus") {
            }
            oFile.close();
        }
+    }
+}
+*/
+
+TEST_CASE("Multi-Dimensional function") {
+    ANN ann("../caffe_FunctionApproximation/prototxt/extended_net_without_loss.prototxt",
+            "","../caffe_FunctionApproximation/prototxt/test_solver.prototxt");
+
+    SECTION( "vector learning on random weights works" ) {
+        double start = -2.0;
+        double stop  =  2.0;
+        double step  =  0.5;
+        int size = ((double(stop)-double(start)) / double(step)) + 1;
+
+
+        vector<vector<double>> inputValues;//(size,vector<double>(size)) ;
+        vector<double> expectedResults;
+
+        double x = start;
+
+        while (x <= stop) {
+            double y = start;
+
+            while(y <= stop) {
+                vector<double> temp;
+                temp.push_back(x);
+                temp.push_back(y);
+                inputValues.push_back(temp);
+                expectedResults.push_back(x+y);
+                y += step;
+            }
+            x += step;
+
+
+        }
+
+        /*
+       inputValues = ann.scaleVector(inputValues,2,true);
+       expectedResults = ann.scaleVector(expectedResults,10,true);
+       REQUIRE(ann.train(inputValues,expectedResults));
+
+       SECTION( "propagate through trained network" ) {
+           vector<double> annOut;
+           annOut = ann.forward(inputValues);
+
+           expectedResults = ann.scaleVector(expectedResults,10,false);
+           annOut = ann.scaleVector(annOut,10,false);
+
+           ofstream oFile("sin.csv");
+           for (int i = 0; i < annOut.size(); i++) {
+               oFile << inputValues[i] << "," << expectedResults[i] << "," << annOut[i] << endl;
+               cout << "for : " << inputValues[i] << " sin(x) : "  << expectedResults[i] << endl;
+               cout << "for : " << inputValues[i] << " ann    : "  << annOut[i] << endl;
+               //REQUIRE(nearlyEqual(expectedResults[i],annOut[i],0.75));
+           }
+           oFile.close();
+       }
+       */
     }
 }

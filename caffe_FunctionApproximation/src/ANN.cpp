@@ -142,6 +142,69 @@ vector<double> ANN::forward(vector<double> inputValues_) {
     return result;
 }
 
+vector<vector<double> > ANN::forward(vector<vector<double> > inputValues_) {
+
+    // load network-structure from prototxt-file
+    net = new Net<double>(getNetStructurePrototxtPath(),caffe::TEST);
+
+    // load weights
+    string trainedWeightsCaffemodelPath_l = getTrainedWeightsCaffemodelPath();
+    if (trainedWeightsCaffemodelPath_l != "") {
+        trainedWeightsCaffemodelPath_l = "/home/anon/Desktop/PrivateProjects/Programming/C++/Caffe_Deep_Learning_Framework/Caffe_FunctionApproximation/build-caffe_FunctionApproximation-Unnamed-Debug/train_iter_450000.caffemodel";
+        net->CopyTrainedLayersFrom(trainedWeightsCaffemodelPath_l);
+    }
+
+    // create BLOB for input layer
+    Blob<double>* inputLayer = net->input_blobs()[0];
+
+    // set dimesions of input layer
+    // --> for normal caffe works with images, therefore the data
+    // --> typically is 4 dimensional
+    // --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
+    // --> in this case we use 1-dimensional data, therefore the data-dimension is 1*1*1*1
+    int num      = inputValues_[0].size();
+    int channels = inputValues_.size();
+    int height   = 1;
+    int width    = 1;
+    vector<int> dimensionsOfInputData = {num,channels,height,width};
+    inputLayer->Reshape(dimensionsOfInputData);
+
+    // forward dimension change to all layers.
+    net->Reshape();
+
+    // insert inputValue into inputLayer
+
+    // iterate all neurons for every inputData-dataset
+    for (unsigned int inputDataSetIndex = 0; inputDataSetIndex < inputValues_.size(); inputDataSetIndex++) {
+        for (unsigned int inputNeuronIndex = 0; inputNeuronIndex < inputValues_[inputNeuronIndex].size(); inputNeuronIndex) {
+            setDataOfBLOB(inputLayer,inputNeuronIndex,inputDataSetIndex,0,0,inputValues_[inputDataSetIndex][inputNeuronIndex]);
+        }
+    }
+
+
+    // propagate inputValue through layers
+    net->Forward();
+
+    // create BLOB for outputLayer
+    Blob<double>* outputLayer = net->output_blobs()[0];
+    cout << "num : " << outputLayer->num() << endl;
+    cout << "channels : " << outputLayer->channels() << endl;
+    cout << "height : " << outputLayer->height() << endl;
+    cout << "width : " << outputLayer->width() << endl;
+
+
+    // copy values in output Layer to 1-dimensional-vector of values
+    vector<vector<double>> result (outputLayer->num(), std::vector<double>(outputLayer->channels()));
+    for (int outputDataSetIndex = 0; outputDataSetIndex < outputLayer->num(); outputDataSetIndex++) {
+        for(int outputNeuronIndex = 0; outputNeuronIndex < outputLayer->channels(); outputNeuronIndex++) {
+            result[outputDataSetIndex][outputNeuronIndex] =getDataOfBLOB(outputLayer,outputDataSetIndex,outputNeuronIndex,0,0);
+        }
+    }
+
+    // return vector of values
+    return result;
+}
+
 /* --- train / optimize weights --- */
 
 /**
@@ -273,6 +336,10 @@ bool ANN::train (vector<double> inputValues_, vector<double> expectedOutputValue
     }
 }
 
+bool ANN::train(vector<vector<double> > inputValues_, vector<double> expectedOutputValues_) {
+
+}
+
 
 
 /* --- miscellaneous --- */
@@ -313,7 +380,7 @@ vector<double> ANN::reZTransformVector(const vector<double> &vectorToReTransform
     return result;
 }
 
-vector<double> ANN::scaleVector(const vector<double> &vectorToScale_, double scaleFactor_, bool minimize) {
+vector<vector<double> > ANN::scaleVector(const vector<vector<double> > &vectorToScale_, double scaleFactor_, bool minimize) {
     vector<double> result = vectorToScale_;
 
     for (int i = 0 ; i < vectorToScale_.size(); i++) {

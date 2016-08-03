@@ -48,6 +48,7 @@ class ANN {
         /* --- pushing values forward (from input to output) --- */
         double         forward (double         inputValue_);
         vector<double> forward (vector<double> inputValues_);
+        vector<vector<double>> forward(vector<vector<double>> inputValues_);
 
         /* --- train / optimize weights --- */
         bool train (vector<double> inputValues_, vector<double> expectedOutputValues_);
