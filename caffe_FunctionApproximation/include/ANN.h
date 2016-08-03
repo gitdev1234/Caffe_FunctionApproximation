@@ -51,6 +51,7 @@ class ANN {
 
         /* --- train / optimize weights --- */
         bool train (vector<double> inputValues_, vector<double> expectedOutputValues_);
+        bool train (vector< vector<double> > inputValues_, vector<double> expectedOutputValues_);
 
         /* --- miscellaneous --- */
         vector<double> zTransformVector(const vector<double> &vectorToTransform_);
