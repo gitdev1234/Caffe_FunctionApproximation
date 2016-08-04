@@ -316,8 +316,8 @@ TEST_CASE("Sinus") {
 
 
 TEST_CASE("Multi-Dimensional function") {
-    ANN ann("../caffe_FunctionApproximation/prototxt/extended_net_without_loss.prototxt",
-            "","../caffe_FunctionApproximation/prototxt/test_solver.prototxt");
+    ANN ann("../caffe_FunctionApproximation/prototxt/multi_input_extended_net_without_loss.prototxt",
+            "","../caffe_FunctionApproximation/prototxt/multi_input_extended_net_solver.prototxt");
 
     SECTION( "vector learning on random weights works" ) {
         double start = -2.0;
