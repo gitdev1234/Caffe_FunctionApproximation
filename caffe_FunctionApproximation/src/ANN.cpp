@@ -149,7 +149,7 @@ vector<vector<double> > ANN::forward(vector<vector<double> > inputValues_) {
 
     // load weights
     string trainedWeightsCaffemodelPath_l = getTrainedWeightsCaffemodelPath();
-    if (trainedWeightsCaffemodelPath_l != "") {
+    if (trainedWeightsCaffemodelPath_l != "") { // TODO
         trainedWeightsCaffemodelPath_l = "/home/anon/Desktop/PrivateProjects/Programming/C++/Caffe_Deep_Learning_Framework/Caffe_FunctionApproximation/build-caffe_FunctionApproximation-Unnamed-Debug/train_iter_450000.caffemodel";
         net->CopyTrainedLayersFrom(trainedWeightsCaffemodelPath_l);
     }
@@ -162,8 +162,8 @@ vector<vector<double> > ANN::forward(vector<vector<double> > inputValues_) {
     // --> typically is 4 dimensional
     // --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
     // --> in this case we use 1-dimensional data, therefore the data-dimension is 1*1*1*1
-    int num      = inputValues_[0].size();
-    int channels = inputValues_.size();
+    int num      = inputValues_.size();
+    int channels = inputValues_[0].size();
     int height   = 1;
     int width    = 1;
     vector<int> dimensionsOfInputData = {num,channels,height,width};

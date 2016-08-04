@@ -314,7 +314,7 @@ TEST_CASE("Sinus") {
 }
 */
 
-/*
+
 TEST_CASE("Multi-Dimensional function") {
     ANN ann("../caffe_FunctionApproximation/prototxt/extended_net_without_loss.prototxt",
             "","../caffe_FunctionApproximation/prototxt/test_solver.prototxt");
@@ -326,7 +326,7 @@ TEST_CASE("Multi-Dimensional function") {
         int size = ((double(stop)-double(start)) / double(step)) + 1;
 
 
-        vector<vector<double>> inputValues;//(size,vector<double>(size)) ;
+        vector<vector<double>> inputValues;
         vector<double> expectedResults;
 
         double x = start;
@@ -348,8 +348,10 @@ TEST_CASE("Multi-Dimensional function") {
 
        inputValues = ann.scaleVector(inputValues,2,true);
        expectedResults = ann.scaleVector(expectedResults,10,true);
-       REQUIRE(ann.train(inputValues,expectedResults));
+       vector<vector<double>> result = ann.forward(inputValues);
+       //REQUIRE(ann.train(inputValues,expectedResults));
 
+       /*
        SECTION( "propagate through trained network" ) {
            vector<double> annOut;
            annOut = ann.forward(inputValues);
@@ -366,6 +368,7 @@ TEST_CASE("Multi-Dimensional function") {
            }
            oFile.close();
        }
+       */
 
     }
-}*/
+}
