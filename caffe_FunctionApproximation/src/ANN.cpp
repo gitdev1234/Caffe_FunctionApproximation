@@ -163,7 +163,7 @@ vector<vector<double> > ANN::forward(vector<vector<double> > inputValues_) {
     // --> numberOfImages * numberOfColorChannels * numberOfPixelsInDirectionOfHeight * numberOfPixelsInDirectionOfWidth
     // --> in this case we use 1-dimensional data, therefore the data-dimension is 1*1*1*1
     int num      = inputValues_.size();
-    int channels = inputValues_[0].size();
+    int channels = 81;//inputValues_[0].size();
     int height   = 1;
     int width    = 1;
     vector<int> dimensionsOfInputData = {num,channels,height,width};
@@ -176,7 +176,7 @@ vector<vector<double> > ANN::forward(vector<vector<double> > inputValues_) {
 
     // iterate all neurons for every inputData-dataset
     for (unsigned int inputDataSetIndex = 0; inputDataSetIndex < inputValues_.size(); inputDataSetIndex++) {
-        for (unsigned int inputNeuronIndex = 0; inputNeuronIndex < inputValues_[inputNeuronIndex].size(); inputNeuronIndex) {
+        for (unsigned int inputNeuronIndex = 0; inputNeuronIndex < inputValues_[inputDataSetIndex].size(); inputNeuronIndex++) {
             setDataOfBLOB(inputLayer,inputNeuronIndex,inputDataSetIndex,0,0,inputValues_[inputDataSetIndex][inputNeuronIndex]);
         }
     }
