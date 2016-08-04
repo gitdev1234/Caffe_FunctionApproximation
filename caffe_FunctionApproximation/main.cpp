@@ -317,7 +317,7 @@ TEST_CASE("Sinus") {
 
 TEST_CASE("Multi-Dimensional function") {
     ANN ann("../caffe_FunctionApproximation/prototxt/multi_input_extended_net_without_loss.prototxt",
-            "","../caffe_FunctionApproximation/prototxt/multi_input_extended_net_solver.prototxt");
+            "","../caffe_FunctionApproximation/prototxt/multi_input_extended_net_test_solver.prototxt");
 
     SECTION( "vector forward of tanh" ) {
         double start = -2.0;
@@ -345,9 +345,24 @@ TEST_CASE("Multi-Dimensional function") {
             x += step;
         }
 
-       vector<vector<double>> result = ann.forward(inputValues);
-       //REQUIRE(ann.train(inputValues,expectedResults));
+        inputValues = ann.scaleVector(inputValues,2,true);
+        expectedResults = ann.scaleVector(expectedResults,10,true);
+        REQUIRE(ann.train(inputValues,expectedResults));
+        SECTION( "propagate through trained network" ) {
+            vector<vector<double>> annOut;
+            annOut = ann.forward(inputValues);
 
+            expectedResults = ann.scaleVector(expectedResults,10,false);
+            annOut = ann.scaleVector(annOut,10,false);
+
+            //ofstream oFile("multi.csv");
+            for (int i = 0; i < inputValues.size(); i++) {
+                cout << "for : " << inputValues[i][0] << "," << inputValues[i][1] << " x+y : "  << expectedResults[i] << endl;
+                cout << "for : " << inputValues[i][0] << "," << inputValues[i][1] << " annOut : "  << annOut[i][0] << endl;
+            }
+
+            //oFile.close();
+       }
 
     }
 }

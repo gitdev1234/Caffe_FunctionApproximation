@@ -90,3 +90,11 @@ layer {
   bottom: 'outputLayer'
   top: 'activatedOutputLayer'
 }
+layer {
+  name: 'loss'
+  type: 'EuclideanLoss'
+  bottom: 'activatedOutputLayer'
+  bottom: 'label'
+  top: 'loss'
+}
+
