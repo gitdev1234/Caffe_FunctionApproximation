@@ -319,7 +319,7 @@ TEST_CASE("Multi-Dimensional function") {
     ANN ann("../caffe_FunctionApproximation/prototxt/multi_input_extended_net_without_loss.prototxt",
             "","../caffe_FunctionApproximation/prototxt/multi_input_extended_net_solver.prototxt");
 
-    SECTION( "vector learning on random weights works" ) {
+    SECTION( "vector forward of tanh" ) {
         double start = -2.0;
         double stop  =  2.0;
         double step  =  0.5;
@@ -345,30 +345,9 @@ TEST_CASE("Multi-Dimensional function") {
             x += step;
         }
 
-
-       inputValues = ann.scaleVector(inputValues,2,true);
-       expectedResults = ann.scaleVector(expectedResults,10,true);
        vector<vector<double>> result = ann.forward(inputValues);
        //REQUIRE(ann.train(inputValues,expectedResults));
 
-       /*
-       SECTION( "propagate through trained network" ) {
-           vector<double> annOut;
-           annOut = ann.forward(inputValues);
-
-           expectedResults = ann.scaleVector(expectedResults,10,false);
-           annOut = ann.scaleVector(annOut,10,false);
-
-           ofstream oFile("sin.csv");
-           for (int i = 0; i < annOut.size(); i++) {
-               oFile << inputValues[i] << "," << expectedResults[i] << "," << annOut[i] << endl;
-               cout << "for : " << inputValues[i] << " sin(x) : "  << expectedResults[i] << endl;
-               cout << "for : " << inputValues[i] << " ann    : "  << annOut[i] << endl;
-               //REQUIRE(nearlyEqual(expectedResults[i],annOut[i],0.75));
-           }
-           oFile.close();
-       }
-       */
 
     }
 }
