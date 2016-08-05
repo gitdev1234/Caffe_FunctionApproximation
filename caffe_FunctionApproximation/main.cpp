@@ -311,15 +311,15 @@ TEST_CASE("Sinus") {
            oFile.close();
        }
     }
-}
-*/
+}*/
+
 
 
 TEST_CASE("Multi-Dimensional function") {
     ANN ann("../caffe_FunctionApproximation/prototxt/multi_input_extended_net_without_loss.prototxt",
             "","../caffe_FunctionApproximation/prototxt/multi_input_extended_net_test_solver.prototxt");
-
-    SECTION( "vector forward of tanh" ) {
+/*
+    SECTION( "train for ann=x+y" ) {
         double start = -2.0;
         double stop  =  2.0;
         double step  =  0.5;
@@ -356,11 +356,63 @@ TEST_CASE("Multi-Dimensional function") {
             annOut = ann.scaleVector(annOut,10,false);
             inputValues = ann.scaleVector(inputValues,2,false);
 
-            ofstream oFile("multi.csv");
+            ofstream oFile("x_plus_y.csv");
             for (int i = 0; i < inputValues.size(); i++) {
                 oFile << inputValues[i][0] << "," << inputValues[i][1] << ","  << expectedResults[i] << "," << annOut[i][0] << endl;
                 cout << "for : " << inputValues[i][0] << "," << inputValues[i][1] << " x+y : "  << expectedResults[i] << endl;
                 cout << "for : " << inputValues[i][0] << "," << inputValues[i][1] << " annOut : "  << annOut[i][0] << endl;
+                REQUIRE(nearlyEqual(expectedResults[i],annOut[i][0],0.4));
+            }
+
+            oFile.close();
+       }
+
+    }*/
+
+
+    SECTION( "train for ann=x*y" ) {
+        double start = -2.0;
+        double stop  =  2.0;
+        double step  =  0.1;
+        int size = ((double(stop)-double(start)) / double(step)) + 1;
+
+
+        vector<vector<double>> inputValues;
+        vector<double> expectedResults;
+
+        double x = start;
+
+        while (x <= stop) {
+            double y = start;
+
+            while(y <= stop) {
+                vector<double> temp;
+                temp.push_back(x);
+                temp.push_back(y);
+                inputValues.push_back(temp);
+                expectedResults.push_back(x*y);
+                y += step;
+            }
+            x += step;
+        }
+
+        inputValues = ann.scaleVector(inputValues,2,true);
+        expectedResults = ann.scaleVector(expectedResults,10,true);
+        REQUIRE(ann.train(inputValues,expectedResults));
+        SECTION( "propagate through trained network" ) {
+            vector<vector<double>> annOut;
+            annOut = ann.forward(inputValues);
+
+            expectedResults = ann.scaleVector(expectedResults,10,false);
+            annOut = ann.scaleVector(annOut,10,false);
+            inputValues = ann.scaleVector(inputValues,2,false);
+
+            ofstream oFile("x_mult_y.csv");
+            for (int i = 0; i < inputValues.size(); i++) {
+                oFile << inputValues[i][0] << "," << inputValues[i][1] << ","  << expectedResults[i] << "," << annOut[i][0] << endl;
+                cout << "for : " << inputValues[i][0] << "," << inputValues[i][1] << " x+y : "  << expectedResults[i] << endl;
+                cout << "for : " << inputValues[i][0] << "," << inputValues[i][1] << " annOut : "  << annOut[i][0] << endl;
+                REQUIRE(nearlyEqual(expectedResults[i],annOut[i][0],1.0));
             }
 
             oFile.close();
