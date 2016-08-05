@@ -354,14 +354,16 @@ TEST_CASE("Multi-Dimensional function") {
 
             expectedResults = ann.scaleVector(expectedResults,10,false);
             annOut = ann.scaleVector(annOut,10,false);
+            inputValues = ann.scaleVector(inputValues,2,false);
 
-            //ofstream oFile("multi.csv");
+            ofstream oFile("multi.csv");
             for (int i = 0; i < inputValues.size(); i++) {
+                oFile << inputValues[i][0] << "," << inputValues[i][1] << ","  << expectedResults[i] << "," << annOut[i][0] << endl;
                 cout << "for : " << inputValues[i][0] << "," << inputValues[i][1] << " x+y : "  << expectedResults[i] << endl;
                 cout << "for : " << inputValues[i][0] << "," << inputValues[i][1] << " annOut : "  << annOut[i][0] << endl;
             }
 
-            //oFile.close();
+            oFile.close();
        }
 
     }
